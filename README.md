@@ -6,6 +6,8 @@ Este es un monorepo para una aplicación de comercio electrónico construida con
 
 ## Arquitectura cliente-servidor
 
+```plaintext
+ecommerce/
 ├── backend/
 │ ├── node_modules/
 │ ├── package.json
@@ -59,6 +61,3 @@ Para iniciar el frontend y backend a la vez:
 
    ```bash
    pnpm run dev
-
-
-
