@@ -4,7 +4,7 @@ Este es un monorepo para una aplicación de comercio electrónico construida con
 
 ## 🧱 Estructura del proyecto
 
-##Arquitectura cliente-servidor
+## Arquitectura cliente-servidor
 
 ├── backend/
 │ ├── node_modules/
@@ -45,8 +45,8 @@ Antes de comenzar, asegúrate de tener instalados:
 1. Clona el repositorio:
 
    ```bash
-   git clone https://github.com/tu-usuario/ecommerce-monorepo.git
-   cd ecommerce-monorepo
+   git clone https://github.com/Jabuitroon/e-commerce.git
+   cd ecommerce
    
 2. Instala las dependencias:
 pnpm install
@@ -57,8 +57,8 @@ pnpm install
 
 Para iniciar el frontend y backend a la vez:
 
-```bash
-pnpm run dev
+   ```bash
+   pnpm run dev
 
 
 
