@@ -21,13 +21,13 @@ type ReducerAction =
 export const cartReducer = (state: Data, action: ReducerAction): Data => {
   switch (action.type) {
     case 'ADD_AT_CART': {
-      const { asin } = action.payload
-      const productInCartIndex = state.findIndex((item) => item.asin === asin)
+      const { pro_id } = action.payload
+      const productInCartIndex = state.findIndex(
+        (item) => item.pro_id === pro_id
+      )
+
       // Si el producto no está en el carrito
       if (productInCartIndex >= 0) {
-        // Creamos un clon 'a profundidad' del cart del estado
-        console.log('Suma')
-
         const newState = structuredClone(state)
         let quantify = Number(newState[productInCartIndex].count)
         quantify += 1
@@ -45,11 +45,12 @@ export const cartReducer = (state: Data, action: ReducerAction): Data => {
     }
 
     case 'DECREASE_QUANTIFY': {
-      const { asin } = action.payload
+      const { pro_id } = action.payload
 
-      const productInCartIndex = state.findIndex((item) => item.asin === asin)
-      console.log(productInCartIndex)
-      // Si el producto no está en el carrito
+      const productInCartIndex = state.findIndex(
+        (item) => item.pro_id === pro_id
+      )
+
       if (Number(state[productInCartIndex].count) > 1) {
         console.log('resta')
 
@@ -64,16 +65,15 @@ export const cartReducer = (state: Data, action: ReducerAction): Data => {
 
     // Remover un producto del carrito
     case 'REMOVE_FROM_CART': {
-      const { asin } = action.payload
-      console.log(asin)
+      const { pro_id } = action.payload
+      console.log(pro_id)
 
       // Donde estaba el set tales tales ahora se retorna un newState
-      return state.filter((item) => item.asin !== asin)
+      return state.filter((item) => item.pro_id !== pro_id)
     }
     case 'REMOVE_ALL_CART': {
       // Donde estaba el set tales tales ahora se retorna un newState
       return []
     }
   }
-  return state
 }

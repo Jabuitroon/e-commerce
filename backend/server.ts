@@ -1,78 +1,104 @@
 import express from 'express'
+import mysql from 'mysql2'
 import cors from 'cors'
+import jwt from 'jsonwebtoken'
 
-import { products } from './productos.json'
+import bcrypt from 'bcrypt'
+import validateToken from './validate-token'
+
+const host = 'localhost'
+const user = 'root'
+const password = 'r00t'
+const database = 'tiendaapp'
+
+const conn = mysql.createConnection({
+  host,
+  user,
+  password,
+  database,
+})
+
+conn.connect((error) => {
+  if (error) throw error
+  console.log('Conexión exitosa')
+})
 
 const app = express()
+app.use(express.json())
 const port = process.env.PORTT ?? 3000
 app.use(cors())
 
-type myContrato = {
-  title: string
-  image: string
-  url: string
-  asin: string
-  star_rating: string
-  global_ratings?: string
-  bought_in_past_month?: string
-  price_symbol: string
-  price: string
-  is_prime?: boolean
-  is_climate_pledge_friendly?: boolean
-  is_best_seller?: boolean
-  is_sponsored?: boolean
-  is_limited_time_deal?: boolean
-}
-
-app.get('/products', async (req, res): Promise<any> => {
-  let productsForFront: any = []
+app.get('/products', validateToken, async (req, res): Promise<any> => {
+  const SQL_QUERY = 'SELECT * FROM tbl_producto'
 
   try {
     res.setHeader('Access-Control-Allow-Origin', '*')
-    productsForFront = products?.map((obj: myContrato) => ({
-      id: obj.asin,
-      name: obj.title,
-      price: obj.price,
-      price_symbol: obj.price_symbol,
-      img: obj.image,
-    }))
+    conn.query(SQL_QUERY, (err, result) => {
+      if (err) throw err
+      return res.status(200).json({ data: result })
+    })
   } catch (error) {
     return res.status(500).json({ message: 'Error al mapear keys' })
   }
-
-  return res.status(200).json({ data: products })
 })
 
-app.get('/search', async (req, res): Promise<any> => {
-  const { q } = req.query
+app.post('/register', async (req, res): Promise<any> => {
+  const SQL_QUERY = 'INSERT INTO tbl_usuario set ?'
 
-  if (!q) {
-    return res.status(500).json({ message: 'El parámetro `q` es requerido.' })
+  const { nombre, password } = req.body
+  const hashedPassword = await bcrypt.hash(password, 10)
+  try {
+    conn.query(
+      SQL_QUERY,
+      { usu_nombre: nombre, usu_contrasena: hashedPassword },
+      (err, result) => {
+        if (err) throw err
+        return res.status(200).json({ msg: 'Add User' })
+      }
+    )
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al loguearse' })
   }
-
-  if (Array.isArray(q)) {
-    return res
-      .status(500)
-      .json({ message: 'El parámetro `q` debe ser un string.' })
-  }
-
-  const search = q?.toString().toLocaleLowerCase()
-
-  const normalizedSearch = search.toLowerCase()
-
-  const filteredData = normalizedSearch
-    ? products.filter((row) =>
-        Object.values(row).some((value) =>
-          String(value).toLowerCase().includes(normalizedSearch)
-        )
-      )
-    : products
-
-  console.log('filter', filteredData)
-
-  // 4. Retornar 200 con la información filtrada
-  return res.status(200).json({ data: filteredData })
 })
+
+app.post('/login', async (req, res): Promise<any> => {
+  const { nombre, password } = req.body
+  const SQL_QUERY =
+    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(nombre)
+  try {
+    conn.query(SQL_QUERY, (err, result) => {
+      let array: any = []
+      if (err) throw err
+      array = result
+      if (array.length == 0) {
+        return res.status(200).json({ msg: 'No existe el usuario' })
+      }
+      if (array.length > 0) {
+        const userHashedPassword = array[0].usu_contrasena
+        console.log(password, userHashedPassword)
+
+        bcrypt.compare(password, userHashedPassword).then((result) => {
+          if (result) {
+            const token = jwt.sign(
+              {
+                usu_nombre: nombre,
+              },
+              process.env.SECRET_KEY || 'shhh', {expiresIn: '10000'}
+            )
+            return res.status(200).json({ token })
+          } else {
+            return res.status(200).json({ msg: 'Login Incorrecto' })
+          }
+        })
+      }
+    })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al loguearse' })
+  }
+})
+app.post('/logout', async (req, res): Promise<any> => {})
+
+app.get('/protected', async (req, res): Promise<any> => {})
 
 app.listen(port, () => {
   console.log(`Listening on port http://localhost:${port}`)

@@ -3,7 +3,7 @@ import { Search as SearchIcon } from 'lucide-react'
 import { ProductsContext } from '../context/filters'
 import { useDebounce } from '@uidotdev/usehooks'
 import { useContext, useEffect, useState } from 'react'
-import { searchData } from '../services/searchProducts'
+import { Product } from '../types'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
@@ -44,17 +44,16 @@ const Button: React.FC<ButtonProps> = ({
 
 export const Search = () => {
   const { initData, setProducts } = useContext(ProductsContext)
-
   const [search, setSearch] = useState<String>(() => {
     const searchParams = new URLSearchParams(window.location.search)
     return searchParams.get('q') ?? ''
   })
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault()
 
-    // Un loadig para setAppStatus(APP_STATUS.UPLOADING)
-  }
+  //   // Un loadig para setAppStatus(APP_STATUS.UPLOADING)
+  // }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value)
@@ -76,16 +75,16 @@ export const Search = () => {
       return
     }
 
-    searchData(debouncedSearch).then((response) => {
-      const [, newData] = response
-      console.log('Input', debouncedSearch, 'Nueva data', newData)
+    const toSearch = search.toString().toLowerCase()
+    console.log(toSearch)
 
-      if (!newData) {
-        // Mensaje sobre el main
-      }
-
-      if (newData) setProducts(newData)
-    })
+    let filterFromData = initData.filter((product: Product) =>
+      Object.values(product).some((value) =>
+        String(value).toLowerCase().includes(toSearch)
+      )
+    )
+    setProducts(filterFromData.length > 0 ? filterFromData : initData)
+    return
   }, [debouncedSearch])
 
   return (

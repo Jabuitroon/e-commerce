@@ -20,7 +20,7 @@ export const CartContext = createContext<CartContextType | undefined>(undefined)
 export function useCartReducer() {
   const initialState: Data = []
   const [state, dispatch] = useReducer(cartReducer, initialState)
-  console.log('El mismo state', state)
+  console.log('Estado del carrito', state)
 
   // Agregar al carrito
   const addToCart = (product: Product) =>

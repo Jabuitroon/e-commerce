@@ -15,6 +15,8 @@ interface ProductProviderProps {
 
 type ProductsContextType = {
   initData: Data
+  setInitData: Dispatch<SetStateAction<Data>>
+  products: Data
   setProducts: Dispatch<SetStateAction<Data>>
   filters: Filters
   setFilters: Dispatch<SetStateAction<Filters>>
@@ -25,24 +27,35 @@ export const ProductsContext = createContext<ProductsContextType | undefined>(
 )
 
 export function ProductsProvider({ children }: ProductProviderProps) {
-  const [initData, setProducts] = useState<Data>([])
+  const [initData, setInitData] = useState<Data>([])
+  const [products, setProducts] = useState<Data>(initData)
   const [filters, setFilters] = useState<Filters>({
     category: 'all',
     minPrices: 200,
   })
 
-  // Llamar a la api para traer información inicial
+  // Llamar a la bd para traer información inicial
   useEffect(() => {
     loadData().then((response) => {
       const [, initialData] = response
 
-      if (initialData) setProducts(initialData)
+      if (initialData) {
+        setInitData(initialData)
+        setProducts(initialData)
+      }
     })
   }, [])
 
   return (
     <ProductsContext.Provider
-      value={{ initData, setProducts, filters, setFilters }}
+      value={{
+        initData,
+        setInitData,
+        products,
+        setProducts,
+        filters,
+        setFilters,
+      }}
     >
       {children}
     </ProductsContext.Provider>

@@ -7,7 +7,7 @@ export const loadData = async (): Promise<[Error?, Data?]> => {
 
     if (!res.ok) return [new Error(`Error al buscar data: ${res.statusText}`)]
     const jsonFilter = (await res.json()) as ApiGetProducts
-    console.log(jsonFilter, 'Initial Data')
+    console.log('Initial Data form services', jsonFilter)
 
     return [undefined, jsonFilter.data]
   } catch (error) {

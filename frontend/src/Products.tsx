@@ -87,15 +87,8 @@ export const Button: React.FC<ButtonProps> = ({
 }
 
 export const Products = () => {
-  const { initData, filters } = useContext(ProductsContext)
+  const { products } = useContext(ProductsContext)
   const { addToCart } = useCart()
-
-  // const filterProducts = initData.filter((product: Product):Filters => {
-  //   return (
-  //     product.price >= filters.minPrices &&
-  //     (filters.category === 'all')
-  //   )
-  // })
 
   return (
     <>
@@ -105,20 +98,20 @@ export const Products = () => {
         </h1>
 
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
-          {initData?.map((objProduct: Product) =>
-            objProduct.is_best_seller ? (
+          {products?.map((objProduct: Product) =>
+            objProduct.pro_is_best_seller ? (
               <div className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl '>
-                {objProduct.sale && (
+                {objProduct.pro_sale && (
                   <div className='absolute top-2 right-2 z-10'>
                     <Badge className='absolute top-2 left-2'>
-                      {objProduct.sale}
+                      {objProduct.pro_sale}
                     </Badge>
                   </div>
                 )}
                 <div className='h-[300px] md:h-[500px] w-full relative'>
                   <img
-                    src={objProduct.image}
-                    alt={objProduct.title}
+                    src={objProduct.pro_image}
+                    alt={objProduct.pro_title}
                     className='h-full w-full object-contain transition-transform group-hover:scale-105'
                   />
                   <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end'>
@@ -146,7 +139,7 @@ export const Products = () => {
                 </div>
                 <div className='p-4'>
                   <h3 className='text-xl font-semibold mb-2'>
-                    {objProduct.title}
+                    {objProduct.pro_title}
                   </h3>
                   <div className='flex items-center mb-2'>
                     <div className='flex'>
@@ -154,7 +147,7 @@ export const Products = () => {
                         <FaStar
                           key={i}
                           className={`h-4 w-4 ${
-                            i < Math.floor(Number(objProduct.star_rating))
+                            i < Math.floor(Number(objProduct.pro_star_rating))
                               ? 'text-yellow-400'
                               : 'text-gray-300'
                           }`}
@@ -162,17 +155,17 @@ export const Products = () => {
                       ))}
                     </div>
                     <span className='text-sm text-gray-500 ml-2'>
-                      {objProduct.global_ratings}
+                      {objProduct.pro_global_ratings}
                     </span>
                   </div>
                   <div className='flex items-center justify-between'>
                     <div>
                       <span className='text-xl font-bold'>
-                        €{Number(objProduct.price).toFixed(2)}
+                        €{Number(objProduct.pro_price).toFixed(2)}
                       </span>
-                      {objProduct.originalPrice && (
+                      {objProduct.pro_originalPrice && (
                         <span className='text-sm text-gray-500 line-through ml-2'>
-                          {objProduct.price_symbol}999999
+                          {objProduct.pro_price_symbol}999999
                         </span>
                       )}
                     </div>
@@ -186,24 +179,24 @@ export const Products = () => {
               <div className='md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl'>
                 <div className='h-[200px] w-full relative'>
                   <img
-                    src={objProduct.image}
-                    alt={objProduct.title}
+                    src={objProduct.pro_image}
+                    alt={objProduct.pro_title}
                     className='h-full w-full object-contain transition-transform group-hover:scale-105'
                   />
                 </div>
-                {objProduct.sale && (
+                {objProduct.pro_sale && (
                   <div className='absolute top-2 left-2'>
                     <Badge className='bg-red-500 text-white'>
-                      {objProduct.sale}
+                      {objProduct.pro_sale}
                     </Badge>
                   </div>
                 )}
                 <div className='p-4'>
-                  <h3 className='font-semibold'>{objProduct.title}</h3>
+                  <h3 className='font-semibold'>{objProduct.pro_title}</h3>
                   <div className='flex items-center justify-between mt-2'>
                     <span className='font-bold'>
-                      {objProduct.price_symbol}
-                      {objProduct.price}
+                      {objProduct.pro_price_symbol}
+                      {objProduct.pro_price}
                     </span>
                     <div className='flex'>
                       <Button
