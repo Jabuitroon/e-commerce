@@ -31,7 +31,7 @@ ecommerce/
 │ ├── tsconfig.json
 │ ├── tsconfig.node.json
 │ └── vite.config.ts
----
+```
 
 ## 🚀 Requisitos
 
