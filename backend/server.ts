@@ -28,7 +28,7 @@ app.use(express.json())
 const port = process.env.PORTT ?? 3000
 app.use(cors())
 
-app.get('/products', validateToken, async (req, res): Promise<any> => {
+app.get('/products', async (req, res): Promise<any> => {
   const SQL_QUERY = 'SELECT * FROM tbl_producto'
 
   try {
@@ -61,7 +61,7 @@ app.post('/register', async (req, res): Promise<any> => {
   }
 })
 
-app.post('/login', async (req, res): Promise<any> => {
+app.post('/login', validateToken, async (req, res): Promise<any> => {
   const { nombre, password } = req.body
   const SQL_QUERY =
     'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(nombre)

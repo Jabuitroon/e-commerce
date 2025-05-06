@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { useCart } from '../hooks/custHooks'
-import { Button } from '../Products'
+import { Button } from './Products'
 
 export function Cart() {
   const { cart, addToCart, decreaseQuantify, removeFromCart, clearCart } =

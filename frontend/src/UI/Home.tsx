@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ShoppingCart, User, MapPin, ChevronDown, X } from 'lucide-react'
 import { Search } from '../components/Search'
 import { Cart } from '../components/Cart'
+import { Link } from 'react-router-dom'
 
 export default function Home() {
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -54,7 +55,6 @@ export default function Home() {
     label: name,
   }))
 
-  
   const [value, setValue] = useState<string | null>(null)
   const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault()
@@ -81,7 +81,9 @@ export default function Home() {
             {/* Logo y Menú */}
             <div className='flex items-center gap-4'>
               <div className='text-2xl font-bold'>
-                <span className='text-black'>My e-commerce</span>
+                <Link to='/'>
+                  <span className='text-black'>My e-commerce</span>
+                </Link>
               </div>
               <button
                 className='flex items-center gap-1 text-black bg-[#e7ecef] hover:bg-gray-100 px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer'
@@ -124,10 +126,12 @@ export default function Home() {
               </div>
 
               {/* Mi cuenta */}
-              <Button size='sm' variant='ghost' className='relative'>
-                <User className='h-6 w-6' />
-                <span className='sr-only'>Mi cuenta</span>
-              </Button>
+              <Link to='register'>
+                <Button size='sm' variant='ghost' className='relative'>
+                  <User className='h-6 w-6' />
+                  <span className='sr-only'>Mi cuenta</span>
+                </Button>
+              </Link>
 
               {/* Carrito */}
               <Button
@@ -167,10 +171,7 @@ export default function Home() {
                       </div>
                     ))}
                     <div>
-                      <Button
-                        variant='ghost'
-                        type='submit'
-                      >
+                      <Button variant='ghost' type='submit'>
                         Aplicar
                       </Button>
                     </div>

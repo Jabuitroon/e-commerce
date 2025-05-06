@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { ProductsContext } from './context/filters'
-import { useCart } from './hooks/custHooks'
+import { ProductsContext } from '../context/filters'
+import { useCart } from '../hooks/custHooks'
 
 import type React from 'react'
 // Importamos los iconos necesarios de react-icons
@@ -10,7 +10,7 @@ import {
   FaHeart,
   FaSortAmountUpAlt,
 } from 'react-icons/fa'
-import { Filters, Product } from './types'
+import { Filters, Product } from '../types'
 
 // Definimos interfaces para los props de nuestros componentes
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -165,7 +165,7 @@ export const Products = () => {
                       </span>
                       {objProduct.pro_originalPrice && (
                         <span className='text-sm text-gray-500 line-through ml-2'>
-                          {objProduct.pro_price_symbol}999999
+                          {objProduct.pro_price_symbol}
                         </span>
                       )}
                     </div>
