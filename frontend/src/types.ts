@@ -1,6 +1,14 @@
+import { FieldValues } from 'react-hook-form'
+
 export type Data = Array<Record<string, string>>
 
-export type nameCategory = 'prime' | 'home' | 'sale' | 'all' | 'light' | 'alternative'
+export type nameCategory =
+  | 'prime'
+  | 'home'
+  | 'sale'
+  | 'all'
+  | 'light'
+  | 'alternative'
 
 export interface Filters {
   category: nameCategory
@@ -36,4 +44,10 @@ export type ApiGetProducts = {
 
 export type ApiSearchResponse = {
   userData: Data
+}
+
+export type userData = {
+  username: string
+  email: string
+  password: string
 }

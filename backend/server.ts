@@ -45,12 +45,12 @@ app.get('/products', async (req, res): Promise<any> => {
 app.post('/register', async (req, res): Promise<any> => {
   const SQL_QUERY = 'INSERT INTO tbl_usuario set ?'
 
-  const { nombre, password } = req.body
+  const { username, email, password } = req.body
   const hashedPassword = await bcrypt.hash(password, 10)
   try {
     conn.query(
       SQL_QUERY,
-      { usu_nombre: nombre, usu_contrasena: hashedPassword },
+      { usu_nombre: username, usu_email: email, usu_contrasena: hashedPassword },
       (err, result) => {
         if (err) throw err
         return res.status(200).json({ msg: 'Add User' })
@@ -61,10 +61,10 @@ app.post('/register', async (req, res): Promise<any> => {
   }
 })
 
-app.post('/login', validateToken, async (req, res): Promise<any> => {
-  const { nombre, password } = req.body
+app.post('/login', async (req, res): Promise<any> => {
+  const { username, password } = req.body
   const SQL_QUERY =
-    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(nombre)
+    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(username)
   try {
     conn.query(SQL_QUERY, (err, result) => {
       let array: any = []
@@ -81,9 +81,9 @@ app.post('/login', validateToken, async (req, res): Promise<any> => {
           if (result) {
             const token = jwt.sign(
               {
-                usu_nombre: nombre,
+                usu_nombre: username,
               },
-              process.env.SECRET_KEY || 'shhh', {expiresIn: '10000'}
+              process.env.SECRET_KEY || 'shhh'
             )
             return res.status(200).json({ token })
           } else {
