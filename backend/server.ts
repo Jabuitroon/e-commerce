@@ -1,10 +1,13 @@
 import express from 'express'
+import { Request, Response } from 'express'
+
 import mysql from 'mysql2'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
 
 import bcrypt from 'bcrypt'
-import validateToken from './validate-token'
+import validateToken from './middlewares/validate-token'
+import { profileHandler } from './controllers/auth.controller'
 
 const host = 'localhost'
 const user = 'root'
@@ -28,7 +31,8 @@ app.use(express.json())
 const port = process.env.PORTT ?? 3000
 app.use(cors())
 
-app.get('/products', async (req, res): Promise<any> => {
+// Promesas en paralelo https://khru.gitbooks.io/typescript/content/promesas.html
+app.get('/products', async (req: Request, res: Response): Promise<any> => {
   const SQL_QUERY = 'SELECT * FROM tbl_producto'
 
   try {
@@ -42,7 +46,7 @@ app.get('/products', async (req, res): Promise<any> => {
   }
 })
 
-app.post('/register', async (req, res): Promise<any> => {
+app.post('/register', async (req: Request, res: Response): Promise<any> => {
   const SQL_QUERY = 'INSERT INTO tbl_usuario set ?'
 
   const { username, email, password } = req.body
@@ -50,7 +54,11 @@ app.post('/register', async (req, res): Promise<any> => {
   try {
     conn.query(
       SQL_QUERY,
-      { usu_nombre: username, usu_email: email, usu_contrasena: hashedPassword },
+      {
+        usu_nombre: username,
+        usu_email: email,
+        usu_contrasena: hashedPassword,
+      },
       (err, result) => {
         if (err) throw err
         return res.status(200).json({ msg: 'Add User' })
@@ -61,7 +69,7 @@ app.post('/register', async (req, res): Promise<any> => {
   }
 })
 
-app.post('/login', async (req, res): Promise<any> => {
+app.post('/login', async (req: Request, res: Response): Promise<any> => {
   const { username, password } = req.body
   const SQL_QUERY =
     'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(username)
@@ -74,14 +82,18 @@ app.post('/login', async (req, res): Promise<any> => {
         return res.status(200).json({ msg: 'No existe el usuario' })
       }
       if (array.length > 0) {
+        const userId = array[0].usu_id
         const userHashedPassword = array[0].usu_contrasena
-        console.log(password, userHashedPassword)
+        const userrol = array[0].usu_rol
+        console.log(userrol)
 
         bcrypt.compare(password, userHashedPassword).then((result) => {
           if (result) {
             const token = jwt.sign(
               {
+                usu_id: userId,
                 usu_nombre: username,
+                usu_rol: userrol,
               },
               process.env.SECRET_KEY || 'shhh'
             )
@@ -96,6 +108,10 @@ app.post('/login', async (req, res): Promise<any> => {
     return res.status(500).json({ message: 'Error al loguearse' })
   }
 })
+
+// 1.) ruta perfiles 2.) Verificao que estoy autenticado 3.) devuelvo la info del usuario
+app.get('/profile', validateToken, profileHandler)
+
 app.post('/logout', async (req, res): Promise<any> => {})
 
 app.get('/protected', async (req, res): Promise<any> => {})

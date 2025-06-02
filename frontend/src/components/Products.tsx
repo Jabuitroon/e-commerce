@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+     import { useContext } from 'react'
 import { ProductsContext } from '../context/filters'
 import { useCart } from '../hooks/custHooks'
 
@@ -11,6 +11,8 @@ import {
   FaSortAmountUpAlt,
 } from 'react-icons/fa'
 import { Filters, Product } from '../types'
+import { useAuthStore } from '../../store/auth'
+import { useNavigate } from 'react-router-dom'
 
 // Definimos interfaces para los props de nuestros componentes
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -90,10 +92,13 @@ export const Products = () => {
   const { products } = useContext(ProductsContext)
   const { addToCart } = useCart()
 
+  const setIsAllow = useAuthStore((state) => state.isAuth)
+  const navigateTo = useNavigate()
+
   return (
     <>
-      <div className='container mx-auto px-4 py-12'>
-        <h1 className='text-3xl font-bold mb-8 text-center md:text-left'>
+      <div className='container w-5xl mx-auto px-4 md:pt-24 flex flex-col gap-8'>
+        <h1 className='text-3xl font-bold text-center md:text-left'>
           Descubre Nuestros Productos
         </h1>
 
@@ -204,7 +209,8 @@ export const Products = () => {
                         variant='ghost'
                         className='h-10 w-10 p-0'
                         onClick={() => {
-                          addToCart(objProduct)
+                          setIsAllow == true ? addToCart(objProduct) : navigateTo('login')
+                          
                         }}
                       >
                         <FaShoppingCart className='h-6 w-6' />

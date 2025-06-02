@@ -1,6 +1,16 @@
-import { FieldValues } from 'react-hook-form'
-
 export type Data = Array<Record<string, string>>
+
+export type StateToken = {
+  token: string
+  isAuth: boolean
+  profile: any
+}
+
+export type Actions = {
+  // Funciones que actualizan estado
+  setToken: (token: string) => void
+  setProfile: (profile: any) => void
+}
 
 export type nameCategory =
   | 'prime'

@@ -10,7 +10,7 @@ function App() {
     <>
       <ProductsProvider>
         <CartProvider>
-          {/* <Home /> */}
+          <Home />
           <AppRouter />
         </CartProvider>
       </ProductsProvider>

@@ -7,7 +7,9 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   if (headerToken != undefined && headerToken.startsWith('Bearer')) {
     const bearerToken = headerToken.slice(7)
     try {
-      jwt.verify(bearerToken, process.env.SECRET_KEY || 'shhh')
+      const decoded = jwt.verify(bearerToken, process.env.SECRET_KEY || 'shhh')
+      req.user = decoded
+      
       next()
     } catch (error) {
       res.status(400).json({ msj: 'Token no válido' })

@@ -7,11 +7,11 @@ export const login = async (userData: userData): Promise<{}> => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(userData),
     })
+    
     if (!res.ok)
       return [new Error(`Error al inicio de sesión: ${res.statusText}`)]
 
-    const jsonres = await res.json()
-    console.log('Respuesta:', jsonres)
+    return res.json()
   } catch (error) {
     if (error instanceof Error) return [error]
   }

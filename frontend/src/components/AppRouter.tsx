@@ -7,9 +7,9 @@ export function AppRouter() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<Products />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/' element={<Products />} />
       </Routes>
     </>
   )

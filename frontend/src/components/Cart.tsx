@@ -1,15 +1,16 @@
 import { useId } from 'react'
 import { useCart } from '../hooks/custHooks'
 import { Button } from './Products'
+import { useAuthStore } from '../../store/auth'
 
 export function Cart() {
   const { cart, addToCart, decreaseQuantify, removeFromCart, clearCart } =
     useCart()
 
   const cartCheckId = useId()
-
+  const setIsAllow = useAuthStore((state) => state.isAuth)
   return cart.length == 0 ? (
-    <h2>Carrito vacío, agrega productos que te gusten.</h2>
+    setIsAllow == true? <h2>Carrito vacío, agrega productos que te gusten.</h2> : <h2>Inicia sesión para comenzar</h2>
   ) : (
     <>
       <input id={cartCheckId} type='checkbox' hidden />
