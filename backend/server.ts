@@ -8,17 +8,19 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import validateToken from './middlewares/validate-token'
 import { profileHandler } from './controllers/auth.controller'
+import productsRoutes from './routes/products.routes'
 
 const host = 'localhost'
 const user = 'root'
 const password = 'r00t'
 const database = 'tiendaapp'
 
-const conn = mysql.createConnection({
+export const conn = mysql.createConnection({
   host,
   user,
   password,
   database,
+  multipleStatements: true,
 })
 
 conn.connect((error) => {
@@ -29,14 +31,28 @@ conn.connect((error) => {
 const app = express()
 app.use(express.json())
 const port = process.env.PORTT ?? 3000
+
 app.use(cors())
+app.use(productsRoutes)
 
 // Promesas en paralelo https://khru.gitbooks.io/typescript/content/promesas.html
 app.get('/products', async (req: Request, res: Response): Promise<any> => {
   const SQL_QUERY = 'SELECT * FROM tbl_producto'
 
   try {
-    res.setHeader('Access-Control-Allow-Origin', '*')
+    conn.query(SQL_QUERY, (err, result) => {
+      if (err) throw err
+      return res.status(200).json({ data: result })
+    })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al mapear keys' })
+  }
+})
+
+app.get('/categories', async (req: Request, res: Response): Promise<any> => {
+  const SQL_QUERY = 'SELECT * FROM tbl_categoria'
+
+  try {
     conn.query(SQL_QUERY, (err, result) => {
       if (err) throw err
       return res.status(200).json({ data: result })

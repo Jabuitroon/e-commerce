@@ -19,6 +19,7 @@ export function Login() {
 
   const setToken = useAuthStore((state) => state.setToken)
   const setProfile = useAuthStore((state) => state.setProfile)
+  const setIsAuth = useAuthStore((state) => state.setIsAuth)
 
   const navigateTo = useNavigate()
 
@@ -37,22 +38,31 @@ export function Login() {
             <p>Crea tu lista de deseos</p>
 
             <form
+              id='login'
               action=''
               method='´POST'
               onSubmit={handleSubmit((data) => {
                 login(data).then((response) => {
-                  if (response) {
-                    setToken(response.token)
-                  }
-                })
+                  const data = response.data
 
-                profileRequest().then((response) => {
-                  if (response) {
-                    setProfile(response)
+                  if ('token' in data) {
+                    setToken(data.token)
+                    setIsAuth(true)
+                  } else if ('msg' in data) {
+                    console.warn('Mensaje del servidor:', data.msg)
+                    setIsAuth(false)
                   }
                 })
 
                 navigateTo('/')
+
+                profileRequest().then((response) => {
+                  if (response) {
+                    console.log(response)
+
+                    setProfile(response)
+                  }
+                })
               })}
               className='p-4 space-y-4 h-vh max-w-md mx-auto'
             >
@@ -65,7 +75,7 @@ export function Login() {
                     required: 'Este Campo es requerido',
                   })}
                   placeholder='Ingresa un nombre de usuario'
-                  className='w-full p-2 border rounded'
+                  className='inputusername w-full p-2 border rounded'
                 />
               </div>
               <label htmlFor='username'>Contraseña</label>
@@ -82,7 +92,7 @@ export function Login() {
                     },
                   })}
                   placeholder='Ingresa una constraseña'
-                  className='w-full p-2 border rounded'
+                  className='inputpassword w-full p-2 border rounded'
                 />
               </div>
               <button

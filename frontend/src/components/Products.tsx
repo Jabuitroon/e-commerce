@@ -1,4 +1,4 @@
-     import { useContext } from 'react'
+import { useContext } from 'react'
 import { ProductsContext } from '../context/filters'
 import { useCart } from '../hooks/custHooks'
 
@@ -10,7 +10,7 @@ import {
   FaHeart,
   FaSortAmountUpAlt,
 } from 'react-icons/fa'
-import { Filters, Product } from '../types'
+import { Product } from '../../../packages/types/src/types'
 import { useAuthStore } from '../../store/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -209,8 +209,9 @@ export const Products = () => {
                         variant='ghost'
                         className='h-10 w-10 p-0'
                         onClick={() => {
-                          setIsAllow == true ? addToCart(objProduct) : navigateTo('login')
-                          
+                          setIsAllow == true
+                            ? addToCart(objProduct)
+                            : navigateTo('login')
                         }}
                       >
                         <FaShoppingCart className='h-6 w-6' />

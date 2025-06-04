@@ -126,8 +126,8 @@ export default function Home() {
               </div>
 
               {/* Mi cuenta */}
-              <Link to='register'>
-                <Button size='sm' variant='ghost' className='relative'>
+              <Link to='login'>
+                <Button size='sm' variant='ghost' className='loginbtn relative'>
                   <User className='h-6 w-6' />
                   <span className='sr-only'>Mi cuenta</span>
                 </Button>
