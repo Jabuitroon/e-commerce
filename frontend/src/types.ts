@@ -1,4 +1,6 @@
-export type Data = Array<Record<string, string>>
+import { Product } from '../../packages/types/src/types'
+
+export type DataProducts = Array<Product>
 
 export type StateToken = {
   token: string
@@ -33,11 +35,7 @@ export interface Filters {
 }
 
 export type ApiGetProducts = {
-  data: Data
-}
-
-export type ApiSearchResponse = {
-  userData: Data
+  data: DataProducts
 }
 
 export type userData = {

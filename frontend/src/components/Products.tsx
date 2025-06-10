@@ -10,7 +10,7 @@ import {
   FaHeart,
   FaSortAmountUpAlt,
 } from 'react-icons/fa'
-import { Product } from '../../../packages/types/src/types'
+
 import { useAuthStore } from '../../store/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -89,7 +89,12 @@ export const Button: React.FC<ButtonProps> = ({
 }
 
 export const Products = () => {
-  const { products } = useContext(ProductsContext)
+  const context = useContext(ProductsContext)
+
+  if (!context) {
+    throw new Error('ProductsContext debe usarse dentro de un ProductsProvider')
+  }
+  const { products } = context
   const { addToCart } = useCart()
 
   const setIsAllow = useAuthStore((state) => state.isAuth)
@@ -103,7 +108,7 @@ export const Products = () => {
         </h1>
 
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
-          {products?.map((objProduct: Product) =>
+          {products?.map((objProduct) =>
             objProduct.pro_is_best_seller ? (
               <div className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl '>
                 {objProduct.pro_sale && (
@@ -168,11 +173,6 @@ export const Products = () => {
                       <span className='text-xl font-bold'>
                         €{Number(objProduct.pro_price).toFixed(2)}
                       </span>
-                      {objProduct.pro_originalPrice && (
-                        <span className='text-sm text-gray-500 line-through ml-2'>
-                          {objProduct.pro_price_symbol}
-                        </span>
-                      )}
                     </div>
                     <Badge className='flex items-center gap-1 bg-gray-100 text-gray-800'>
                       Popular

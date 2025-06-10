@@ -22,7 +22,6 @@ export function DropdownList() {
 
   const handleChange = (option: DropdownOption) => {
     setSelectedOption(option)
-    console.log('Selected option:', option)
   }
 
   return (

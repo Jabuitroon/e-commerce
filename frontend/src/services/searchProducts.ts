@@ -1,6 +1,6 @@
-import { ApiGetProducts, type Data } from '../types'
+import { ApiGetProducts, type DataProducts } from '../types'
 
-export const searchData = async (search: String): Promise<[Error?, Data?]> => {
+export const searchData = async (search: String): Promise<[Error?, DataProducts?]> => {
   try {
     const res = await fetch(`http://localhost:3000/search?q=${search}`)
 

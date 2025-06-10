@@ -1,4 +1,5 @@
-import { ProductInCart, Product, type Data } from '../types'
+import { ProductInCart, Product } from '../../../packages/types'
+import { type DataProducts } from '../types'
 import { cartReducer } from '../reducers/cartReducer'
 
 import { createContext, ReactNode, useReducer } from 'react'
@@ -8,7 +9,7 @@ interface CartProviderProps {
 }
 
 interface CartContextType {
-  cart: Data
+  cart: DataProducts
   addToCart: (product: Product) => void
   decreaseQuantify: (product: ProductInCart) => void
   removeFromCart: (product: ProductInCart) => void
@@ -18,7 +19,7 @@ interface CartContextType {
 export const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function useCartReducer() {
-  const initialState: Data = []
+  const initialState: DataProducts = []
   const [state, dispatch] = useReducer(cartReducer, initialState)
   console.log('Estado del carrito', state)
 

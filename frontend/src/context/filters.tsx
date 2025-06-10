@@ -1,4 +1,4 @@
-import { Filters, type Data } from '../types'
+import { Filters, type DataProducts } from '../types'
 import {
   createContext,
   Dispatch,
@@ -14,10 +14,10 @@ interface ProductProviderProps {
 }
 
 type ProductsContextType = {
-  initData: Data
-  setInitData: Dispatch<SetStateAction<Data>>
-  products: Data
-  setProducts: Dispatch<SetStateAction<Data>>
+  initData: DataProducts
+  setInitData: Dispatch<SetStateAction<DataProducts>>
+  products: DataProducts
+  setProducts: Dispatch<SetStateAction<DataProducts>>
   filters: Filters
   setFilters: Dispatch<SetStateAction<Filters>>
 }
@@ -27,8 +27,8 @@ export const ProductsContext = createContext<ProductsContextType | undefined>(
 )
 
 export function ProductsProvider({ children }: ProductProviderProps) {
-  const [initData, setInitData] = useState<Data>([])
-  const [products, setProducts] = useState<Data>(initData)
+  const [initData, setInitData] = useState<DataProducts>([])
+  const [products, setProducts] = useState<DataProducts>(initData)
   const [filters, setFilters] = useState<Filters>({
     category: 'all',
     minPrices: 200,
