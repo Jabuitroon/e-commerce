@@ -3,7 +3,7 @@ import { Search as SearchIcon } from 'lucide-react'
 import { ProductsContext } from '../context/filters'
 import { useDebounce } from '@uidotdev/usehooks'
 import { useContext, useEffect, useState } from 'react'
-import { Product } from '../types'
+import { Product } from '../../../packages/types/src/types'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
@@ -43,7 +43,13 @@ const Button: React.FC<ButtonProps> = ({
 }
 
 export const Search = () => {
-  const { initData, setProducts } = useContext(ProductsContext)
+  const context = useContext(ProductsContext)
+
+  if (!context) {
+    throw new Error('ProductsContext debe usarse dentro de un ProductsProvider')
+  }
+  const { initData, setProducts } = context
+
   const [search, setSearch] = useState<String>(() => {
     const searchParams = new URLSearchParams(window.location.search)
     return searchParams.get('q') ?? ''

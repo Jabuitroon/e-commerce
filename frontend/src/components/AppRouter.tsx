@@ -8,8 +8,7 @@ import { Login } from '../components/Login'
 import { Profile } from './Profile'
 
 export function AppRouter() {
-
-  const isAuth = useAuthStore(state => state.isAuth)
+  const isAuth = useAuthStore((state) => state.isAuth)
   return (
     <>
       <Routes>

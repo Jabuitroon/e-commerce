@@ -52,6 +52,8 @@ export default function UseProductManager({ product }: ProductFormProps) {
           is_prime: product.pro_is_prime,
           is_best_seller: product.pro_is_best_seller,
           sale: product.pro_sale,
+          idcategory: product.cat_id,
+          stock: product.pro_stock,
         }
       : undefined,
   })
@@ -83,8 +85,8 @@ export default function UseProductManager({ product }: ProductFormProps) {
   }, [selectedOption])
 
   async function onSubmit(data: ProductForm) {
-    console.log(product);
-    
+    console.log(typeof product, product)
+
     if (product) {
       await updateProduct(data).then((response) => {
         const { msg, id } = response
@@ -192,19 +194,21 @@ export default function UseProductManager({ product }: ProductFormProps) {
         </div>
 
         {/* Campo Categoría */}
-        <div className='space-y-2'>
-          <label
-            htmlFor='dropdown'
-            className='block text-sm font-medium text-gray-700'
-          >
-            Selecciona una Categoría:
-          </label>
-          <Dropdown
-            options={options}
-            placeholder='Seleccionar...'
-            onChange={handleChange}
-          />
-        </div>
+        {!product && (
+          <div className='space-y-2'>
+            <label
+              htmlFor='dropdown'
+              className='block text-sm font-medium text-gray-700'
+            >
+              Selecciona una Categoría:
+            </label>
+            <Dropdown
+              options={options}
+              placeholder='Seleccionar...'
+              onChange={handleChange}
+            />
+          </div>
+        )}
 
         {selectedOption && (
           <div className='mt-4 p-4 bg-gray-50 rounded-md'>
@@ -282,18 +286,11 @@ export default function UseProductManager({ product }: ProductFormProps) {
 
         {/* Botones */}
         <div className='flex gap-3 justify-end pt-4'>
-          {/* <button
-            type='button'
-            onClick={handleCloseAddModal}
-            className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors'
-          >
-            Cancelar
-          </button> */}
           <button
             type='submit'
             className='px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors'
           >
-            Añadir Producto
+            {product? 'Actualizar Producto':'Aceptar'}
           </button>
         </div>
       </form>

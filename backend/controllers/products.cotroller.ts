@@ -63,25 +63,24 @@ export const createProduct = (req: Request, res: Response) => {
   }
 }
 export const updateProduct = (req: Request, res: Response) => {
-  const SQL_QUERY = 'UPDATE tbl_producto set ? where pro_id = ?'
+  const SQL_QUERY =
+    'UPDATE tbl_producto set ? , pro_update_at = CURRENT_TIMESTAMP() where pro_id = ?'
 
-  const { name, image, symbol, price, stock, ratingstar, idcategory } = req.body
+  const { name, image, symbol, price, stock, ratingstar } = req.body
 
   try {
-    const convertId = Number(idcategory)
-
     const producto = {
       pro_title: name,
       pro_image: image,
       pro_star_rating: ratingstar,
       pro_price_symbol: symbol,
       pro_price: price,
-      pro_categoria_id: convertId,
       pro_stock: stock,
     }
 
-    conn.query(SQL_QUERY, [producto, req.params.id], (err) => {
+    conn.query(SQL_QUERY, [producto, req.params.id], (err, results) => {
       if (err) throw err
+      console.log('Row updated with timestamp:', results)
       return res
         .status(200)
         .json({ msg: 'Producto Actualizado', id: req.params.id })
@@ -92,5 +91,16 @@ export const updateProduct = (req: Request, res: Response) => {
 }
 
 export const deleteProduct = (req: Request, res: Response) => {
-  res.send('Eliminando producto')
+  const SQL_QUERY = 'DELETE FROM tbl_producto WHERE pro_id = ?'
+
+  try {
+    conn.query(SQL_QUERY, [req.params.id], (err) => {
+      if (err) throw err
+      return res
+        .status(200)
+        .json({ msg: 'Producto Eliminado', id: req.params.id })
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar el producto' })
+  }
 }

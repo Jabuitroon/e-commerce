@@ -4,8 +4,12 @@ import { ShoppingCart, User, MapPin, ChevronDown, X } from 'lucide-react'
 import { Search } from '../components/Search'
 import { Cart } from '../components/Cart'
 import { Link } from 'react-router-dom'
+import { useAuthStore } from '../../store/auth'
 
 export default function Home() {
+  const isAuth = useAuthStore((state) => state.isAuth)
+  const showProfile = isAuth ? 'profile' : 'login'
+
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
     className?: string
@@ -126,7 +130,7 @@ export default function Home() {
               </div>
 
               {/* Mi cuenta */}
-              <Link to='login'>
+              <Link to={showProfile}>
                 <Button size='sm' variant='ghost' className='loginbtn relative'>
                   <User className='h-6 w-6' />
                   <span className='sr-only'>Mi cuenta</span>

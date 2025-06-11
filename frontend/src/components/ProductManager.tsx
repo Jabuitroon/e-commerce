@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react'
-
-import UseProductManager, { ProductForm } from './Forms'
 import { Product } from '../../../packages/types/src/types'
 import { getProducts } from '../services/getProducts'
+import { deleteProduct } from '../services/deleteProduct'
 import { DataProducts } from '../types'
+import { ModalProducts } from '../UI/modalProduct'
 
 export default function ProductManagement() {
-  // Controles de modal
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-  const handleCloseAddModal = () => {
-    setIsAddModalOpen(false)
-  }
-
-  const handleCloseUpdateModal = () => {
-    setIsUpdateModalOpen(false)
-  }
-
+  // Data inicial
   const [products, setInitProducts] = useState<DataProducts>([])
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    undefined
+  )
 
   useEffect(() => {
     getProducts().then((response) => {
@@ -27,13 +20,19 @@ export default function ProductManagement() {
         setInitProducts(initialData)
       }
     })
-  }, [])
+  }, [selectedProduct])
 
+  // Controles de modal
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProduct(undefined)
+  }
+
+  // Filtrar productos
   const [searchTerm, setSearchTerm] = useState('')
 
-  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
-    undefined
-  )
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const filteredProducts = products.filter(
@@ -42,32 +41,49 @@ export default function ProductManagement() {
       product.pro_title.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  // Función onclick para abrir modal de añadir producto
+  // Controladores CRUD
   const handleAddProduct = () => {
-    setIsAddModalOpen(true)
+    setIsModalOpen(true)
   }
 
   const handleUpdateProduct = (product: Product) => {
     setSelectedProduct(product)
-    setIsUpdateModalOpen(true)
+    setIsModalOpen(true)
   }
 
   const handleDelete = (product: Product) => {
-    // setSelectedProduct(product)
-    // setIsDeleteModalOpen(true)
+    setSelectedProduct(product)
+    setIsDeleteModalOpen(true)
   }
 
   const confirmDelete = () => {
     if (selectedProduct) {
-      //   setProducts(products.filter((p) => p.id !== selectedProduct.id))
-      //   setIsDeleteModalOpen(false)
-      //   setSelectedProduct(null)
+      setIsDeleteModalOpen(false)
+      deleteProduct(selectedProduct.pro_id)
+      setSelectedProduct(undefined)
     }
   }
 
   const cancelDelete = () => {
     setIsDeleteModalOpen(false)
     setSelectedProduct(undefined)
+  }
+
+  // Hover para mostrar imagenes
+  const [hoveredProduct, setHoveredProduct] = useState<Product | null>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseEnter = (product: Product, event: React.MouseEvent) => {
+    setHoveredProduct(product)
+    setMousePosition({ x: event.clientX, y: event.clientY })
+  }
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    setMousePosition({ x: event.clientX, y: event.clientY })
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredProduct(null)
   }
 
   return (
@@ -158,7 +174,12 @@ export default function ProductManagement() {
                     <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
                       {product.pro_id}
                     </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                    <td
+                      className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'
+                      onMouseEnter={(e) => handleMouseEnter(product, e)}
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
+                    >
                       {product.pro_title}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
@@ -184,7 +205,7 @@ export default function ProductManagement() {
                       </span>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                      Una fecha
+                      {product.pro_update_at.substring(0, 10)} / {product.pro_update_at.substring(11, 16)}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
                       <div className='flex justify-end gap-2'>
@@ -208,6 +229,7 @@ export default function ProductManagement() {
                           </svg>
                         </button>
                         <button
+                          onClick={() => handleDelete(product)}
                           className='inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors'
                           title='Eliminar producto'
                         >
@@ -264,76 +286,17 @@ export default function ProductManagement() {
         </div>
       </div>
 
-      {/* Modal de añadir producto */}
-      {isAddModalOpen && (
-        <div className='fixed inset-0 bg-gray-400/80 flex items-center justify-center p-4 z-50'>
-          <div className='bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto'>
-            <div className='p-6'>
-              <div className='flex items-center justify-between mb-6'>
-                <h3 className='text-lg font-medium text-gray-900'>
-                  Añadir Nuevo Producto
-                </h3>
-                <button
-                  onClick={handleCloseAddModal}
-                  className='text-gray-400 hover:text-gray-600 transition-colors'
-                >
-                  <svg
-                    className='h-6 w-6'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M6 18L18 6M6 6l12 12'
-                    />
-                  </svg>
-                </button>
-              </div>
-              <UseProductManager />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isUpdateModalOpen && (
-        <div className='fixed inset-0 bg-gray-400/80 flex items-center justify-center p-4 z-50'>
-          <div className='bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto'>
-            <div className='p-6'>
-              <div className='flex items-center justify-between mb-6'>
-                <h3 className='text-lg font-medium text-gray-900'>
-                  Editando el Producto...
-                </h3>
-                <button
-                  onClick={handleCloseUpdateModal}
-                  className='text-gray-400 hover:text-gray-600 transition-colors'
-                >
-                  <svg
-                    className='h-6 w-6'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M6 18L18 6M6 6l12 12'
-                    />
-                  </svg>
-                </button>
-              </div>
-              <UseProductManager product={selectedProduct} />
-            </div>
-          </div>
-        </div>
+      {/* Modal de añadir o editar producto */}
+      {isModalOpen && (
+        <ModalProducts
+          selectedProduct={selectedProduct}
+          closeModal={handleCloseModal}
+        />
       )}
 
       {/* Modal de confirmación de eliminación */}
       {isDeleteModalOpen && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'>
+        <div className='fixed inset-0 bg-gray-500/80 bg-opacity-50 flex items-center justify-center p-4 z-50'>
           <div className='bg-white rounded-lg shadow-xl max-w-md w-full'>
             <div className='p-6'>
               <div className='flex items-center mb-4'>
@@ -382,6 +345,28 @@ export default function ProductManagement() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Tooltip con imagen */}
+      {hoveredProduct && (
+        <div
+          className='fixed z-50 pointer-events-none'
+          style={{
+            left: mousePosition.x + 15,
+            top: mousePosition.y - 10,
+          }}
+        >
+          <div className='bg-white border border-gray-200 rounded-lg shadow-lg p-2 max-w-xs'>
+            <img
+              src={hoveredProduct.pro_image || '/placeholder.svg'}
+              alt={hoveredProduct.pro_title}
+              className='w-48 h-32 object-cover rounded'
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.src = '/placeholder.svg?height=128&width=192'
+              }}
+            />
           </div>
         </div>
       )}
