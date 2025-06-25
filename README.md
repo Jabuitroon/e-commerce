@@ -63,9 +63,8 @@ pnpm install
    ```
 
 ## Demos
-   Vista inicial de productos, sin inicio de sesión 
-   
-      https://github.com/user-attachments/assets/69b20603-84c7-4a08-a9f6-9669970d4a76
+   Vista inicial de productos, sin inicio de sesión    
+   https://github.com/user-attachments/assets/69b20603-84c7-4a08-a9f6-9669970d4a76
 
 
 
