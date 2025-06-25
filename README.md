@@ -71,5 +71,16 @@ https://github.com/user-attachments/assets/69b20603-84c7-4a08-a9f6-9669970d4a76
 
 https://github.com/user-attachments/assets/159e1ba8-3b0c-41bd-be1c-202127eebccc
 
+- Como administrador puedo agregar productos a la base de datos
+
+https://github.com/user-attachments/assets/1d475e20-f772-45bc-9d55-cceaeff10eea
+
+- Como administrador puedo editar la información de tal producto
+
+https://github.com/user-attachments/assets/3c8c3bd6-405c-4a4a-94bd-ab54750e36de
+
+- Como administrador puedo eliminar tal producto de la base de datos
+
+https://github.com/user-attachments/assets/e65f2764-00e9-4e16-b1af-93affa87a37f
 
 
