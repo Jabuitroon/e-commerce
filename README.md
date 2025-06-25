@@ -51,10 +51,9 @@ Antes de comenzar, asegúrate de tener instalados:
    cd ecommerce
    
 2. Instala las dependencias:
-pnpm install
-
+   ```bash
+   pnpm install
 ---
-
 ## 🚀 Iniciar en local
    Para iniciar el frontend y backend a la vez:
 
@@ -82,5 +81,12 @@ https://github.com/user-attachments/assets/3c8c3bd6-405c-4a4a-94bd-ab54750e36de
 - Como administrador puedo eliminar tal producto de la base de datos
 
 https://github.com/user-attachments/assets/e65f2764-00e9-4e16-b1af-93affa87a37f
+
+- Como cualquier usuario que haya iniciado sesión puede acceder a la fucionalidad del carrito de compras
+
+https://github.com/user-attachments/assets/a60dc2ce-201a-4f95-a4e3-71449f42f75c
+
+
+  
 
 
