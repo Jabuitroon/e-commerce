@@ -71,7 +71,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <button
         type='button'
-        className={`flex items-center justify-between w-full px-4 py-2 text-left bg-white border rounded-md shadow-sm ${
+        className={`selector flex items-center justify-between w-full px-4 py-2 text-left bg-white border rounded-md shadow-sm ${
           disabled
             ? 'cursor-not-allowed opacity-60'
             : 'hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'

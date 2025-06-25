@@ -108,7 +108,7 @@ export default function UseProductManager({ product }: ProductFormProps) {
   const [formMsg, setFormMsg] = useState('')
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+      <form id='formProduct' onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
         {/* Campo Nombre */}
         <div>
           <label

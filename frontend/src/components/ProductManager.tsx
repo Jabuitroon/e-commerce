@@ -3,7 +3,7 @@ import { Product } from '../../../packages/types/src/types'
 import { getProducts } from '../services/getProducts'
 import { deleteProduct } from '../services/deleteProduct'
 import { DataProducts } from '../types'
-import { ModalProducts } from '../UI/modalProduct'
+import { ModalProducts } from '../UI/ModalProduct'
 
 export default function ProductManagement() {
   // Data inicial
@@ -11,6 +11,7 @@ export default function ProductManagement() {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   )
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     getProducts().then((response) => {
@@ -20,10 +21,9 @@ export default function ProductManagement() {
         setInitProducts(initialData)
       }
     })
-  }, [selectedProduct])
+  }, [selectedProduct, isModalOpen])
 
   // Controles de modal
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
