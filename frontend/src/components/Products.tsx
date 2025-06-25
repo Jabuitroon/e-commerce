@@ -110,7 +110,7 @@ export const Products = () => {
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
           {products?.map((objProduct) =>
             objProduct.pro_is_best_seller ? (
-              <div className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl '>
+              <div className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl' key={objProduct.pro_id}>
                 {objProduct.pro_sale && (
                   <div className='absolute top-2 right-2 z-10'>
                     <Badge className='absolute top-2 left-2'>
@@ -181,7 +181,7 @@ export const Products = () => {
                 </div>
               </div>
             ) : (
-              <div className='md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl'>
+              <div className='md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl' key={objProduct.pro_id}>
                 <div className='h-[200px] w-full relative'>
                   <img
                     src={objProduct.pro_image}

@@ -130,12 +130,12 @@ export default function Home() {
               </div>
 
               {/* Mi cuenta */}
-              <Link to={showProfile}>
-                <Button size='sm' variant='ghost' className='loginbtn relative'>
+              <Button size='sm' variant='ghost' className='loginbtn relative'>
+                <Link to={showProfile}>
                   <User className='h-6 w-6' />
                   <span className='sr-only'>Mi cuenta</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               {/* Carrito */}
               <Button
