@@ -60,6 +60,7 @@ Para iniciar el frontend y backend a la vez:
 
    ```bash
    pnpm --filter '**' dev
+   ```
 
 ## Demos
 https://github.com/user-attachments/assets/69b20603-84c7-4a08-a9f6-9669970d4a76
