@@ -2,25 +2,29 @@ import { useId } from 'react'
 import { useCart } from '../hooks/custHooks'
 import { Button } from './Products'
 import { useAuthStore } from '../../store/auth'
+import { Product } from '../../../packages/types/src/types'
 
 export function Cart() {
   const { cart, addToCart, decreaseQuantify, removeFromCart, clearCart } =
     useCart()
 
+    console.log(cart);
+    
+
   const cartCheckId = useId()
   const setIsAllow = useAuthStore((state) => state.isAuth)
   return cart.length == 0 ? (
-    setIsAllow == true? <h2>Carrito vacío, agrega productos que te gusten.</h2> : <h2>Inicia sesión para comenzar</h2>
+    setIsAllow == true? <h2 className='text-center'>Carrito vacío, agrega productos que te gusten.</h2> : <h2>Inicia sesión para comenzar</h2>
   ) : (
     <>
       <input id={cartCheckId} type='checkbox' hidden />
       {/* Para cada producto que haya en el carrito se renderiza el cartItem */}
-      {cart.map((objProduct: any) => (
+      {cart.map((objProduct: Product) => (
         <div className='group relative rounded-xl bg-white shadow-md transition-all hover:shadow-xl'>
           <div className='h-[200px] w-full relative'>
             <img
-              src={objProduct.image}
-              alt={objProduct.title}
+              src={objProduct.pro_image}
+              alt={objProduct.pro_image}
               className='h-full w-full object-contain transition-transform group-hover:scale-105'
             />
             <Button
@@ -35,11 +39,11 @@ export function Cart() {
             </Button>
           </div>
           <div className='p-4'>
-            <h3 className='font-semibold'>{objProduct.title}</h3>
+            <h3 className='font-semibold'>{objProduct.cat_nombre}</h3>
             <div className='flex items-center justify-between mt-2'>
               <span className='font-bold'>
-                {objProduct.price_symbol}
-                {objProduct.price}
+                {objProduct.pro_price_symbol}
+                {objProduct.pro_price}
               </span>
               <div className='flex items-center justify-between w-36'>
                 <Button

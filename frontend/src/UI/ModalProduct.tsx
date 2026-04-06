@@ -8,7 +8,6 @@ type modalProps = {
 }
 
 export function ModalProducts({ selectedProduct, closeModal }: modalProps) {
-  console.log(typeof selectedProduct, 'paso por UI')
 
   return (
     <div className='fixed inset-0 bg-gray-400/80 flex items-center justify-center p-4 z-50'>
@@ -27,7 +26,7 @@ export function ModalProducts({ selectedProduct, closeModal }: modalProps) {
 
             <button
               onClick={closeModal}
-              className='text-gray-400 hover:text-gray-600 transition-colors'
+              className='closeModal text-gray-400 hover:text-gray-600 transition-colors'
             >
               <svg
                 className='h-6 w-6'

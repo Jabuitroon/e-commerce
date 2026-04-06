@@ -9,6 +9,7 @@ import bcrypt from 'bcrypt'
 import validateToken from './middlewares/validate-token'
 import { profileHandler } from './controllers/auth.controller'
 import productsRoutes from './routes/products.routes'
+import { aiRouter } from './routes/ai.routes'
 
 const host = 'localhost'
 const user = 'root'
@@ -34,6 +35,7 @@ const port = process.env.PORTT ?? 3000
 
 app.use(cors())
 app.use(productsRoutes)
+app.use(aiRouter)
 
 // Promesas en paralelo https://khru.gitbooks.io/typescript/content/promesas.html
 app.get('/products', async (req: Request, res: Response): Promise<any> => {

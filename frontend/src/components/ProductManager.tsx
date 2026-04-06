@@ -211,7 +211,7 @@ export default function ProductManagement() {
                       <div className='flex justify-end gap-2'>
                         <button
                           onClick={() => handleUpdateProduct(product)}
-                          className='inline-flex items-center p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
+                          className='editProductBtn inline-flex items-center p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
                           title='Editar producto'
                         >
                           <svg
@@ -230,7 +230,7 @@ export default function ProductManagement() {
                         </button>
                         <button
                           onClick={() => handleDelete(product)}
-                          className='inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors'
+                          className='deleteProductBtn inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors'
                           title='Eliminar producto'
                         >
                           <svg

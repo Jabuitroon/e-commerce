@@ -15,6 +15,50 @@ export const getProducts = (req: Request, res: Response) => {
   }
 }
 
+export const getProductById = (req: Request, res: Response) => {
+  // Extraemos el id de los parámetros de la ruta
+  const { id } = req.params
+
+  const SQL_QUERY = `
+    SELECT * FROM tbl_producto 
+    INNER JOIN tbl_categoria ON tbl_producto.pro_categoria_id = tbl_categoria.cat_id 
+    WHERE tbl_producto.pro_id = ?
+  `
+
+  try {
+    conn.query(SQL_QUERY, [id], (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: 'Error en la consulta a la base de datos' })
+      }
+
+      if (Array.isArray(result) && result.length === 0) {
+        return res.status(404).json({ message: 'Producto no encontrado' })
+      }
+
+      // Retornamos solo el primer elemento (el objeto del producto)
+      return res.status(200).json({ data: result })
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Error interno del servidor' })
+  }
+}
+
+export const findProductData = (id: string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    const SQL_QUERY = `
+      SELECT * FROM tbl_producto 
+      INNER JOIN tbl_categoria ON tbl_producto.pro_categoria_id = tbl_categoria.cat_id 
+      WHERE tbl_producto.pro_id = ?
+    `
+    conn.query(SQL_QUERY, [id], (err, result) => {
+      if (err) return reject(err)
+      resolve(Array.isArray(result) && result.length > 0 ? result[0] : null)
+    })
+  })
+}
+
 export const createProduct = (req: Request, res: Response) => {
   const SQL_QUERY = 'INSERT INTO tbl_producto set ?'
   const SQL_CALL_ID =
