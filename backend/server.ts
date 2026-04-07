@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt'
 import validateToken from './middlewares/validate-token'
 import { profileHandler } from './controllers/auth.controller'
 import productsRoutes from './routes/products.routes'
-import { aiRouter } from './routes/ai.routes'
+import aiRouter from './routes/ai.routes'
 
 const host = 'localhost'
 const user = 'root'
@@ -80,7 +80,7 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
       (err, result) => {
         if (err) throw err
         return res.status(200).json({ msg: 'Add User' })
-      }
+      },
     )
   } catch (error) {
     return res.status(500).json({ message: 'Error al loguearse' })
@@ -113,7 +113,7 @@ app.post('/login', async (req: Request, res: Response): Promise<any> => {
                 usu_nombre: username,
                 usu_rol: userrol,
               },
-              process.env.SECRET_KEY || 'shhh'
+              process.env.SECRET_KEY || 'shhh',
             )
             return res.status(200).json({ token })
           } else {

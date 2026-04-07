@@ -1,10 +1,12 @@
+import { generateText } from 'ai'
 import { aiClient } from '../config/config'
-import { streamText, generateObject } from 'ai'
+import 'dotenv/config'
+
+const model = aiClient('zai/glm-4.6v-flash')
 
 export async function generateResponse(prompt: string) {
-  const model = aiClient('zai/glm-4.6v-flash')
-
-  const text = streamText({
+  console.log('KEY:', process.env.AI_GATEWAY_API_KEY)
+  const { text } = await generateText({
     model,
     prompt,
     temperature: 0.7,
