@@ -1,18 +1,35 @@
-import { generateText } from 'ai'
-import { aiClient } from '../config/config'
 import 'dotenv/config'
+// import { OpenAI } from 'openai'
+// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-const model = aiClient('zai/glm-4.6v-flash')
+import { Groq } from 'groq-sdk'
+const groq = new Groq()
 
 export async function generateResponse(prompt: string) {
-  console.log('KEY:', process.env.AI_GATEWAY_API_KEY)
-  const { text } = await generateText({
-    model,
-    prompt,
-    temperature: 0.7,
-  })
+  try {
+    // console.log('key:', process.env.OPENAI_API_KEY)
+    console.log('key:', process.env.GROQ_API_KEY)
 
-  return text
+    const response = await groq.chat.completions.create({
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
+      max_tokens: parseInt(process.env.AI_MAX_TOKENS || '1200'),
+      // max_completion_tokens: 8192,
+      top_p: parseFloat(process.env.AI_TOP_P || '0.9'),
+      // n: 1,
+      stream: false,
+      reasoning_effort: 'medium',
+      stop: null,
+    })
+
+    const text = response.choices?.[0]?.message?.content || ''
+
+    return text
+  } catch (err) {
+    console.error('Error en generateResponse:', err)
+    throw err
+  }
 }
 
 // export async function generateRecommendation(

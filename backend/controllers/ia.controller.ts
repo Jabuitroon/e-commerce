@@ -3,19 +3,17 @@ import { generateResponse } from '../services/ai.service'
 import { findProductData } from '../controllers/products.cotroller'
 
 export const getIaResponse = async (req: Request, res: Response) => {
+  console.log('getIaResponse body:', req.body)
   try {
     const { userMessage } = req.body
 
     const result = await generateResponse(userMessage)
 
-    res.json({
-      reply: result,
-    })
-  } catch (error: any) {
+    res.json({ response: result })
+  } catch (error) {
     console.error('Error en AI Controller:', error)
-    // Solo enviamos error si el stream no ha empezado a escribir
-    if (!res.headersSent) {
-      res.status(500).json({ message: 'Error interno al procesar IA' })
-    }
+    const message = (error as any)?.message || 'Error en la comunicación con OpenAI'
+    const details = process.env.NODE_ENV === 'production' ? undefined : { stack: (error as any)?.stack, raw: String(error) }
+    res.status(500).json({ message, details })
   }
 }
