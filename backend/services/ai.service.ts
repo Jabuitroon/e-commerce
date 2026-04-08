@@ -1,31 +1,49 @@
+import { ChatMessage } from 'backend/types/chatbot'
 import 'dotenv/config'
 // import { OpenAI } from 'openai'
 // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 import { Groq } from 'groq-sdk'
-const groq = new Groq()
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+})
 
-export async function generateResponse(prompt: string) {
+export async function generateResponse(chat: ChatMessage[]) {
   try {
     // console.log('key:', process.env.OPENAI_API_KEY)
     console.log('key:', process.env.GROQ_API_KEY)
 
     const response = await groq.chat.completions.create({
       model: 'openai/gpt-oss-120b',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a EbereGPT. You can help with graphic design tasks',
+        },
+        ...chat,
+      ],
+      // Controla la creatividad de la respuesta de 0 a 1
       temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
+
+      // Máximo tokens para la respuesta (sin contar el prompt). Se ajusta según los límites del modelo.
       max_tokens: parseInt(process.env.AI_MAX_TOKENS || '1200'),
-      // max_completion_tokens: 8192,
+
+      // Máximo tokens para la respuesta completa (incluyendo el prompt). Se ajusta según el tamaño de tu prompt.
+      max_completion_tokens: 8192,
+
+      // Diversidad de la respuesta. A menor valor el modelo se enfoca en las opciones más probables, a mayor valor respuestas más variadas.
       top_p: parseFloat(process.env.AI_TOP_P || '0.9'),
-      // n: 1,
-      stream: false,
+
+      // Número de respuestas a generar
+      n: 1,
+
+      // A mayor valor más determinista y lenta respuesta
       reasoning_effort: 'medium',
+      stream: true,
       stop: null,
     })
 
-    const text = response.choices?.[0]?.message?.content || ''
-
-    return text
+    return response
   } catch (err) {
     console.error('Error en generateResponse:', err)
     throw err

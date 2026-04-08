@@ -1,6 +1,5 @@
-import { Router, Request, Response, NextFunction } from 'express'
+import { Router } from 'express'
 import { getIaResponse } from '../controllers/ia.controller'
-
 
 const aiRouter = Router()
 
