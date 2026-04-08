@@ -5,7 +5,7 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "@e-commerce/types": ["packages/types/src/types"]
+      "@e-commerce/types/*": ["types/*"]
     },
     "strict": true,
     "esModuleInterop": true,

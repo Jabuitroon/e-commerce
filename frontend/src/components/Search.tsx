@@ -3,7 +3,7 @@ import { Search as SearchIcon } from 'lucide-react'
 import { ProductsContext } from '../context/filters'
 import { useDebounce } from '@uidotdev/usehooks'
 import { useContext, useEffect, useState } from 'react'
-import { Product } from '../../../packages/types/src/types'
+import { Product } from '../../../types/types/src/types'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string

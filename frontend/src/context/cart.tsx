@@ -1,4 +1,5 @@
-import { ProductInCart, Product } from '../../../packages/types'
+/* eslint-disable react-refresh/only-export-components */
+import { ProductInCart, Product } from '../interfaces/interfaces'
 import { type DataProducts } from '../types'
 import { cartReducer } from '../reducers/cartReducer'
 
@@ -9,7 +10,7 @@ interface CartProviderProps {
 }
 
 interface CartContextType {
-  cart: DataProducts
+  cart: ProductInCart[]
   addToCart: (product: Product) => void
   decreaseQuantify: (product: ProductInCart) => void
   removeFromCart: (product: ProductInCart) => void

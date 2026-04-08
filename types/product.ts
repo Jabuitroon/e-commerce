@@ -20,4 +20,3 @@ export interface Product {
 export interface ProductInCart extends Product {
   count: string
 }
-  // pro_is_climate_pledge_friendly?: string

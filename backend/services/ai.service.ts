@@ -1,4 +1,4 @@
-import { ChatMessage } from 'backend/types/chatbot'
+import { ChatMessage } from '@e-commerce/types/chatbot'
 import 'dotenv/config'
 // import { OpenAI } from 'openai'
 // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -29,7 +29,7 @@ export async function generateResponse(chat: ChatMessage[]) {
       max_tokens: parseInt(process.env.AI_MAX_TOKENS || '1200'),
 
       // Máximo tokens para la respuesta completa (incluyendo el prompt). Se ajusta según el tamaño de tu prompt.
-      max_completion_tokens: 8192,
+      // max_completion_tokens: 8192,
 
       // Diversidad de la respuesta. A menor valor el modelo se enfoca en las opciones más probables, a mayor valor respuestas más variadas.
       top_p: parseFloat(process.env.AI_TOP_P || '0.9'),

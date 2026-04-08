@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Product } from '../../../packages/types/src/types'
+import { Product } from '../../../types/types/src/types'
 import { getProducts } from '../services/getProducts'
 import { deleteProduct } from '../services/deleteProduct'
 import { DataProducts } from '../types'

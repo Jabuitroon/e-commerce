@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { categoriesRequest } from '../services/getCategories'
 import { Dropdown, DropdownOption } from './Dropdown'
 
-import { Product } from '../../../packages/types'
+import { Product } from '../../../types/types'
 import { updateProduct } from '../services/updateProduct'
 import { addProduct } from '../services/addProduct'
 

@@ -2,24 +2,28 @@ import { useId } from 'react'
 import { useCart } from '../hooks/custHooks'
 import { Button } from './Products'
 import { useAuthStore } from '../../store/auth'
-import { Product } from '../../../packages/types/src/types'
 
 export function Cart() {
   const { cart, addToCart, decreaseQuantify, removeFromCart, clearCart } =
     useCart()
 
-    console.log(cart);
-    
+  console.log(cart)
 
   const cartCheckId = useId()
   const setIsAllow = useAuthStore((state) => state.isAuth)
   return cart.length == 0 ? (
-    setIsAllow == true? <h2 className='text-center'>Carrito vacío, agrega productos que te gusten.</h2> : <h2>Inicia sesión para comenzar</h2>
+    setIsAllow == true ? (
+      <h2 className='text-center'>
+        Carrito vacío, agrega productos que te gusten.
+      </h2>
+    ) : (
+      <h2>Inicia sesión para comenzar</h2>
+    )
   ) : (
     <>
       <input id={cartCheckId} type='checkbox' hidden />
       {/* Para cada producto que haya en el carrito se renderiza el cartItem */}
-      {cart.map((objProduct: Product) => (
+      {cart.map((objProduct) => (
         <div className='group relative rounded-xl bg-white shadow-md transition-all hover:shadow-xl'>
           <div className='h-[200px] w-full relative'>
             <img

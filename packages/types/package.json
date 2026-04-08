@@ -1,6 +1,0 @@
-{
-  "name": "@e-commerce/types",
-  "version": "1.0.0",
-  "main": "src/types.ts",
-  "types": "src/types.ts"
-}

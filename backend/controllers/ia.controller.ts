@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { generateResponse } from '../services/ai.service'
 import { findProductData } from '../controllers/products.cotroller'
-import { ChatMessage } from 'backend/types/chatbot'
+import { ChatMessage } from '@e-commerce/types/chatbot'
 
 export const getIaResponse = async (
   req: Request,
@@ -24,26 +24,26 @@ export const getIaResponse = async (
   }
 
   try {
-    const { userMessages } = req.body
+    const { chatMessages } = req.body
     // const lastMessage = userMessages[userMessages.length - 1]
     // const promptError = validatePrompt(lastMessage)
     // if (!promptError) {
     //   return res.status(400).json({ error: promptError })
     // }
 
-    if (!userMessages) {
-      res.write('Pregúntame acerca de lo que vendemos')
-      return
-    }
+    // if (!userMessages) {
+    //   res.write('Pregúntame acerca de lo que vendemos')
+    //   return
+    // }
 
-    if (!Array.isArray(userMessages)) {
-      res.status(400).json({ error: 'Messages inválidos' })
-    }
+    // if (!Array.isArray(userMessages)) {
+    //   res.status(400).json({ error: 'Messages inválidos' })
+    // }
 
     res.setHeader('Content-Type', 'text/plain:charset=utf-8')
     res.setHeader('Transfer-Encoding', 'chunked')
 
-    const stream = await generateResponse(userMessages)
+    const stream = await generateResponse(chatMessages)
 
     // Chunks en tiempo real
     for await (const chunk of stream) {

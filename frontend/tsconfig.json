@@ -1,7 +1,11 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "baseUrl": "../",
+    "module": "commonjs",
+    "typeRoots": ["./types"],
+    "ignoreDeprecations": "6.0"
   },
   "files": [],
   "references": [

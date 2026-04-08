@@ -1,4 +1,4 @@
-import { Product } from '../../packages/types/src/types'
+import { Product } from './interfaces/interfaces'
 
 export type DataProducts = Array<Product>
 
