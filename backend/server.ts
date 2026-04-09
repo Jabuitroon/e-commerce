@@ -33,6 +33,8 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORTT ?? 3000
 
+app.set('trust proxy', 1);
+
 app.use(cors())
 app.use(productsRoutes)
 app.use(aiRouter)

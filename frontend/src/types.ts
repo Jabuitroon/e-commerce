@@ -5,13 +5,13 @@ export type DataProducts = Array<Product>
 export type StateToken = {
   token: string
   isAuth: boolean
-  profile: any
+  profile: string
 }
 
 export type Actions = {
   // Funciones que actualizan estado
   setToken: (token: string) => void
-  setProfile: (profile: any) => void
+  setProfile: (profile: string) => void
   setIsAuth: (isAuth: boolean) => void
   logout: () => void
 }

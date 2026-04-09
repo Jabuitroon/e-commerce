@@ -1,5 +1,5 @@
-import { ChatMessage } from '@e-commerce/types/chatbot'
 import 'dotenv/config'
+import { ChatMessage } from '@e-commerce/types/chatbot'
 // import { OpenAI } from 'openai'
 // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -18,7 +18,9 @@ export async function generateResponse(chat: ChatMessage[]) {
       messages: [
         {
           role: 'system',
-          content: 'You are a EbereGPT. You can help with graphic design tasks',
+          // content:
+          //   'You are DonPTG. You are a marketing expert. You will find ways to persuade users to make purchases. You must help users find their favorite products in our online store.',
+          content: 'You are an expert in traditional natural medicine. You must help the user find medicine for their symptoms.'
         },
         ...chat,
       ],
