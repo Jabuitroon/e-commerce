@@ -2,16 +2,16 @@
 
 Este es un monorepo para una aplicación de comercio electrónico de Arquitectura cliente-servidor, construida con TypeScript, React y Tailwind en el front, en el back con node JS y una base de datos mySQL. El repositorio está dividido en dos para facilitar el desarrollo e implementación de scripts que me permiten ejecutar ambos puertos como servidores desacoplados.
 
-• Diseñé y construí una plataforma de comercio electrónico. Sigue una arquitectura cliente-servidor. Este enfoque me permitió
+* Diseñé y construí una plataforma de comercio electrónico. Sigue una arquitectura cliente-servidor. Este enfoque me permitió
 construir una interfaz de usuario dinámica con React y Tailwind, mientras que el backend se desarrolló utilizando Node.js y una
 base de datos MySQL.
-• Se implementó la autenticación JWT y utilicé zustand para la gestión de estado del carrito de compras etc.
-• Este proyecto me permitió unificar mis conocimientos sobre bases de datos y el uso de APIs, y está disponible con
+* Se implementó la autenticación JWT y utilicé zustand para la gestión de estado del carrito de compras etc.
+* Este proyecto me permitió unificar mis conocimientos sobre bases de datos y el uso de APIs, y está disponible con
 demostraciones en video en mi GitHub jabuitroon, lo que resalta mi capacidad para gestionar y presentar proyectos de manera
 efectiva.
-• La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la
+* La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la
 ejecución de ambos puertos como servidores desacoplados, lo que optimizó el flujo de trabajo y la eficiencia del proyecto.
-• Éste es un stack base, pero con la robustez que se obtiene al utilizar el tipado fuerte de TypeScript para tener tener en cuenta la
+* Éste es un stack base, pero con la robustez que se obtiene al utilizar el tipado fuerte de TypeScript para tener tener en cuenta la
 escalabilidad y la mantenibilidad del código.
 
 ## 🧱 Estructura del proyecto
