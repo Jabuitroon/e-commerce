@@ -1,4 +1,4 @@
-import { CreateProductInput } from 'backend/DTOs/products.dto'
+import { ProductInput } from 'backend/DTOs/products.dto'
 
 export interface Product {
   pro_id: string
@@ -22,7 +22,7 @@ export interface Product {
 export interface IProductDAO {
   getAll(): Promise<Product[]>
   findById(id: string): Promise<Product | null>
-  create(product: CreateProductInput): Promise<Product | null>
-  // updateProduct(id: number, product: Product): Promise<boolean>;
-  // delete(id: number): Promise<boolean>;
+  create(product: ProductInput): Promise<Product | null>
+  update(id: string, product: ProductInput): Promise<boolean>
+  // delete(id: string): Promise<boolean>;
 }

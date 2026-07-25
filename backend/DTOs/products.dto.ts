@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const CreateProductDto = z.object({
+export const ProductDto = z.object({
   // 'pro_title' -> 'varchar' (Convertido a string no vacío)
   name: z.string().min(1, 'El nombre es obligatorio'),
 
@@ -33,4 +33,4 @@ export const CreateProductDto = z.object({
 })
 
 // Tipo inferido para TypeScript
-export type CreateProductInput = z.infer<typeof CreateProductDto>
+export type ProductInput = z.infer<typeof ProductDto>

@@ -7,6 +7,7 @@ export const pool = mysql.createPool({
   database: 'tiendaapp',
   waitForConnections: true,
   connectionLimit: 10,
+  multipleStatements: true
 })
 
 // To do: Implement a function to get a connection from the pool and handle errors appropriately.

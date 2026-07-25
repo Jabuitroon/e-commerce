@@ -23,7 +23,11 @@ router.get('/products/:id', (req, res) => {
 router.post('/products', (req, res) => {
   createProduct(req, res)
 })
-router.put('/products/:id', updateProduct)
-router.delete('/products/:id', deleteProduct)
+router.put('/products/:id', (req, res) => {
+  updateProduct(req, res)
+})
+router.delete('/products/:id', (req, res) => {
+  deleteProduct(req, res)
+})
 
 export default router
