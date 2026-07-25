@@ -1,150 +1,105 @@
 import { Request, Response } from 'express'
-import { conn } from '../server'
 
-export const getProducts = (req: Request, res: Response) => {
-  const SQL_QUERY =
-    'select * FROM tbl_producto INNER JOIN tbl_categoria ON tbl_producto.pro_categoria_id = tbl_categoria.cat_id'
+import { ProductDAO } from '../src/DAO/ProductDAO'
+import { CreateProductDto } from 'backend/DTOs/products.dto'
 
+const productDao = new ProductDAO()
+
+export const getProducts = async (req: Request, res: Response) => {
+  // 1. Obtener todos los usuarios
   try {
-    conn.query(SQL_QUERY, (err, result) => {
-      if (err) throw err
-      return res.status(200).json({ data: result })
-    })
+    const products = await productDao.getAll()
+    console.log(products)
+    return res.status(200).json({ data: products })
   } catch (error) {
-    res.status(500).json({ message: 'Error al mapear keys' })
+    return res.status(500).json({ message: 'Error al mapear keys' })
   }
+
+  // 2. Crear un nuevo usuario
+  // const newId = await productDao.create({ name: 'Ana', email: 'ana@example.com' })
+  // console.log(`Usuario creado con ID: ${newId}`)
 }
 
-export const getProductById = (req: Request, res: Response) => {
-  // Extraemos el id de los parámetros de la ruta
+export const getProductById = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   const { id } = req.params
-
-  const SQL_QUERY = `
-    SELECT * FROM tbl_producto 
-    INNER JOIN tbl_categoria ON tbl_producto.pro_categoria_id = tbl_categoria.cat_id 
-    WHERE tbl_producto.pro_id = ?
-  `
-
   try {
-    conn.query(SQL_QUERY, [id], (err, result) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ message: 'Error en la consulta a la base de datos' })
-      }
-
-      if (Array.isArray(result) && result.length === 0) {
-        return res.status(404).json({ message: 'Producto no encontrado' })
-      }
-
-      // Retornamos solo el primer elemento (el objeto del producto)
-      return res.status(200).json({ data: result })
-    })
-  } catch (error) {
-    res.status(500).json({ message: 'Error interno del servidor' })
-  }
-}
-
-export const findProductData = (id: string): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    const SQL_QUERY = `
-      SELECT * FROM tbl_producto 
-      INNER JOIN tbl_categoria ON tbl_producto.pro_categoria_id = tbl_categoria.cat_id 
-      WHERE tbl_producto.pro_id = ?
-    `
-    conn.query(SQL_QUERY, [id], (err, result) => {
-      if (err) return reject(err)
-      resolve(Array.isArray(result) && result.length > 0 ? result[0] : null)
-    })
-  })
-}
-
-export const createProduct = (req: Request, res: Response) => {
-  const SQL_QUERY = 'INSERT INTO tbl_producto set ?'
-  const SQL_CALL_ID =
-    'CALL generar_id_personalizado(?, @new_id); SELECT @new_id as id;'
-
-  const {
-    name,
-    image,
-    symbol,
-    price,
-    stock,
-    ratingstar,
-    idcategory,
-    category,
-  } = req.body
-
-  const prefix = (category || 'GEN').substring(0, 3).toUpperCase()
-
-  try {
-    conn.query(SQL_CALL_ID, [prefix], (err, results) => {
-      if (err) throw err
-
-      const resultArray = results as [any[], any[]]
-      const newId = resultArray[1][0].id
-
-      const convertId = Number(idcategory)
-
-      const producto = {
-        pro_id: newId,
-        pro_title: name,
-        pro_image: image,
-        pro_star_rating: ratingstar,
-        pro_price_symbol: symbol,
-        pro_price: price,
-        pro_categoria_id: convertId,
-        pro_stock: stock,
-      }
-
-      conn.query(SQL_QUERY, producto, (err2) => {
-        if (err2) throw err2
-        return res.status(200).json({ msg: 'Producto guardado', id: newId })
-      })
-    })
-  } catch (error) {
-    res.status(500).json({ message: 'Error al guardar el producto' })
-  }
-}
-export const updateProduct = (req: Request, res: Response) => {
-  const SQL_QUERY =
-    'UPDATE tbl_producto set ? , pro_update_at = CURRENT_TIMESTAMP() where pro_id = ?'
-
-  const { name, image, symbol, price, stock, ratingstar } = req.body
-
-  try {
-    const producto = {
-      pro_title: name,
-      pro_image: image,
-      pro_star_rating: ratingstar,
-      pro_price_symbol: symbol,
-      pro_price: price,
-      pro_stock: stock,
+    const product = await productDao.findById(id)
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' })
     }
-
-    conn.query(SQL_QUERY, [producto, req.params.id], (err, results) => {
-      if (err) throw err
-      console.log('Row updated with timestamp:', results)
-      return res
-        .status(200)
-        .json({ msg: 'Producto Actualizado', id: req.params.id })
-    })
+    return res.status(200).json({ data: product })
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el producto' })
+    return res
+      .status(500)
+      .json({ message: 'Error en la consulta a la base de datos' })
   }
 }
 
-export const deleteProduct = (req: Request, res: Response) => {
-  const SQL_QUERY = 'DELETE FROM tbl_producto WHERE pro_id = ?'
+export const createProduct = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const result = CreateProductDto.safeParse(req.body)
+
+  if (!result.success) {
+    return res.status(400).json({
+      error: 'Datos inválidos',
+      details: result.error.format(),
+    })
+  }
 
   try {
-    conn.query(SQL_QUERY, [req.params.id], (err) => {
-      if (err) throw err
-      return res
-        .status(200)
-        .json({ msg: 'Producto Eliminado', id: req.params.id })
-    })
+    const product = await productDao.create(result.data)
+    if (!product) {
+      return res.status(404).json({ message: 'Error al crear el producto' })
+    }
+    return res
+      .status(200)
+      .json({ msg: `${product.pro_title} creado`, id: product.pro_id })
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar el producto' })
+    return res
+      .status(500)
+      .json({ message: 'Error en la consulta a la base de datos' })
   }
 }
+// export const updateProduct = (req: Request, res: Response) => {
+//   const SQL_QUERY =
+//     'UPDATE tbl_producto set ? , pro_update_at = CURRENT_TIMESTAMP() where pro_id = ?'
+//   const { name, image, symbol, price, stock, ratingstar } = req.body
+//   try {
+//     const producto = {
+//       pro_title: name,
+//       pro_image: image,
+//       pro_star_rating: ratingstar,
+//       pro_price_symbol: symbol,
+//       pro_price: price,
+//       pro_stock: stock,
+//     }
+//     conn.query(SQL_QUERY, [producto, req.params.id], (err, results) => {
+//       if (err) throw err
+//       console.log('Row updated with timestamp:', results)
+//       return res
+//         .status(200)
+//         .json({ msg: 'Producto Actualizado', id: req.params.id })
+//     })
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error al actualizar el producto' })
+//   }
+
+// export const delete = (req: Request, res: Response) => {
+//   const SQL_QUERY = 'DELETE FROM tbl_producto WHERE pro_id = ?'
+
+//   try {
+//     conn.query(SQL_QUERY, [req.params.id], (err) => {
+//       if (err) throw err
+//       return res
+//         .status(200)
+//         .json({ msg: 'Producto Eliminado', id: req.params.id })
+//     })
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error al eliminar el producto' })
+//   }
+// }

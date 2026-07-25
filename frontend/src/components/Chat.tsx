@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ChatMessage } from '../interfaces/interfaces'
 import { Streamdown } from 'streamdown'
-import { useChat } from '@ai-sdk/react'
 
 export const Chat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([])

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { generateResponse } from '../services/ai.service'
-import { findProductData } from '../controllers/products.cotroller'
+// import { findProductData } from '../controllers/products.cotroller'
 import { ChatMessage } from '@e-commerce/types/chatbot'
 
 export const getIaResponse = async (

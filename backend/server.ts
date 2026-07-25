@@ -1,39 +1,19 @@
 import express from 'express'
 import { Request, Response } from 'express'
 
-import mysql from 'mysql2'
 import cors from 'cors'
-import jwt from 'jsonwebtoken'
+import { pool } from './src/config/db'
 
 import bcrypt from 'bcrypt'
-import validateToken from './middlewares/validate-token'
-import { profileHandler } from './controllers/auth.controller'
 import productsRoutes from './routes/products.routes'
 import aiRouter from './routes/ai.routes'
-
-const host = 'localhost'
-const user = 'root'
-const password = 'r00t'
-const database = 'tiendaapp'
-
-export const conn = mysql.createConnection({
-  host,
-  user,
-  password,
-  database,
-  multipleStatements: true,
-})
-
-conn.connect((error) => {
-  if (error) throw error
-  console.log('Conexión exitosa')
-})
+import { generateToken } from './middlewares/auth.middleware'
 
 const app = express()
 app.use(express.json())
 const port = process.env.PORTT ?? 3000
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 1)
 
 app.use(cors())
 app.use(productsRoutes)
@@ -44,10 +24,9 @@ app.get('/products', async (req: Request, res: Response): Promise<any> => {
   const SQL_QUERY = 'SELECT * FROM tbl_producto'
 
   try {
-    conn.query(SQL_QUERY, (err, result) => {
-      if (err) throw err
-      return res.status(200).json({ data: result })
-    })
+    const [result, err] = await pool.query(SQL_QUERY)
+    if (err) throw err
+    return res.status(200).json({ data: result })
   } catch (error) {
     return res.status(500).json({ message: 'Error al mapear keys' })
   }
@@ -57,10 +36,9 @@ app.get('/categories', async (req: Request, res: Response): Promise<any> => {
   const SQL_QUERY = 'SELECT * FROM tbl_categoria'
 
   try {
-    conn.query(SQL_QUERY, (err, result) => {
-      if (err) throw err
-      return res.status(200).json({ data: result })
-    })
+    const [result, err] = await pool.query(SQL_QUERY)
+    if (err) throw err
+    return res.status(200).json({ data: result })
   } catch (error) {
     return res.status(500).json({ message: 'Error al mapear keys' })
   }
@@ -72,18 +50,14 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
   const { username, email, password } = req.body
   const hashedPassword = await bcrypt.hash(password, 10)
   try {
-    conn.query(
-      SQL_QUERY,
-      {
-        usu_nombre: username,
-        usu_email: email,
-        usu_contrasena: hashedPassword,
-      },
-      (err, result) => {
-        if (err) throw err
-        return res.status(200).json({ msg: 'Add User' })
-      },
-    )
+    const [result, err] = await pool.query(SQL_QUERY, {
+      usu_nombre: username,
+      usu_email: email,
+      usu_contrasena: hashedPassword,
+    })
+    if (err) throw err
+    console.log('result: Se creó el usuario', result)
+    return res.status(200).json({ msg: 'Add User' })
   } catch (error) {
     return res.status(500).json({ message: 'Error al loguearse' })
   }
@@ -92,45 +66,37 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
 app.post('/login', async (req: Request, res: Response): Promise<any> => {
   const { username, password } = req.body
   const SQL_QUERY =
-    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + conn.escape(username)
+    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + pool.escape(username)
   try {
-    conn.query(SQL_QUERY, (err, result) => {
-      let array: any = []
-      if (err) throw err
-      array = result
-      if (array.length == 0) {
-        return res.status(200).json({ msg: 'No existe el usuario' })
-      }
-      if (array.length > 0) {
-        const userId = array[0].usu_id
-        const userHashedPassword = array[0].usu_contrasena
-        const userrol = array[0].usu_rol
-        console.log(userrol)
+    const [result, err] = await pool.query(SQL_QUERY)
+    if (err) throw err
+    let array: any = []
+    array = result
+    if (array.length == 0) {
+      return res.status(200).json({ msg: 'No existe el usuario' })
+    }
+    if (array.length > 0) {
+      const userId = array[0].usu_id
+      const userHashedPassword = array[0].usu_contrasena
+      const userrol = array[0].usu_rol
+      console.log(userrol)
 
-        bcrypt.compare(password, userHashedPassword).then((result) => {
-          if (result) {
-            const token = jwt.sign(
-              {
-                usu_id: userId,
-                usu_nombre: username,
-                usu_rol: userrol,
-              },
-              process.env.SECRET_KEY || 'shhh',
-            )
-            return res.status(200).json({ token })
-          } else {
-            return res.status(200).json({ msg: 'Login Incorrecto' })
-          }
-        })
-      }
-    })
+      bcrypt.compare(password, userHashedPassword).then((result) => {
+        if (result) {
+          const token = generateToken(userId, username, userrol)
+          return res.status(200).json({ token })
+        } else {
+          return res.status(200).json({ msg: 'Login Incorrecto' })
+        }
+      })
+    }
   } catch (error) {
     return res.status(500).json({ message: 'Error al loguearse' })
   }
 })
 
 // 1.) ruta perfiles 2.) Verificao que estoy autenticado 3.) devuelvo la info del usuario
-app.get('/profile', validateToken, profileHandler)
+// app.get('/profile', authentication, profileHandler)
 
 app.post('/logout', async (req, res): Promise<any> => {})
 
