@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
-import { IUser, Role } from '../types/user'
 
+import { IUser, Role } from '../types/user'
 interface JwtRequest extends Request {
   user?: {
     usu_id: number
@@ -47,6 +47,9 @@ export function authorizeRoles(allowedRoles: Role[]) {
   }
 }
 
+  // 2. Crear un nuevo usuario
+  // const newId = await productDao.create({ name: 'Ana', email: 'ana@example.com' })
+  // console.log(`Usuario creado con ID: ${newId}`)
 // export const profileHandler = (req: JwtRequest, res: Response) => {
 //   const user = req.user
 

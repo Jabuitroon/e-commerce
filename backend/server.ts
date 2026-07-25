@@ -2,7 +2,7 @@ import express from 'express'
 import { Request, Response } from 'express'
 
 import cors from 'cors'
-import { pool } from './src/config/db'
+import { pool } from './config/db'
 
 import bcrypt from 'bcrypt'
 import productsRoutes from './routes/products.routes'
@@ -50,12 +50,11 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
   const { username, email, password } = req.body
   const hashedPassword = await bcrypt.hash(password, 10)
   try {
-    const [result, err] = await pool.query(SQL_QUERY, {
+    const [result] = await pool.query(SQL_QUERY, {
       usu_nombre: username,
       usu_email: email,
       usu_contrasena: hashedPassword,
     })
-    if (err) throw err
     console.log('result: Se creó el usuario', result)
     return res.status(200).json({ msg: 'Add User' })
   } catch (error) {
@@ -65,33 +64,29 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
 
 app.post('/login', async (req: Request, res: Response): Promise<any> => {
   const { username, password } = req.body
-  const SQL_QUERY =
-    'SELECT * FROM tbl_usuario WHERE usu_nombre =' + pool.escape(username)
+  const SQL_QUERY = 'SELECT * FROM tbl_usuario WHERE usu_nombre = ?'
   try {
-    const [result, err] = await pool.query(SQL_QUERY)
-    if (err) throw err
-    let array: any = []
-    array = result
-    if (array.length == 0) {
-      return res.status(200).json({ msg: 'No existe el usuario' })
+    const [result] = await pool.query(SQL_QUERY, [username]);
+    const users = result as any[];
+    if (users.length === 0) {
+      return res.status(401).json({ msg: 'No existe el usuario' })
     }
-    if (array.length > 0) {
-      const userId = array[0].usu_id
-      const userHashedPassword = array[0].usu_contrasena
-      const userrol = array[0].usu_rol
-      console.log(userrol)
+    const user = users[0]
+    const userId = user.usu_id
+    const userHashedPassword = user.usu_contrasena
+    const userrol = user.usu_rol
+    console.log(userrol)
 
-      bcrypt.compare(password, userHashedPassword).then((result) => {
-        if (result) {
-          const token = generateToken(userId, username, userrol)
-          return res.status(200).json({ token })
-        } else {
-          return res.status(200).json({ msg: 'Login Incorrecto' })
-        }
-      })
+    const isMatch = await bcrypt.compare(password, userHashedPassword)
+
+    if (isMatch) {
+      const token = generateToken(userId, username, userrol)
+      return res.status(200).json({ token })
+    } else {
+      return res.status(401).json({ msg: 'Login Incorrecto' })
     }
   } catch (error) {
-    return res.status(500).json({ message: 'Error al loguearse' })
+    return res.status(500).json({ message: `${error}` })
   }
 })
 

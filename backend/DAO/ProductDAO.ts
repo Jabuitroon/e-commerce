@@ -1,6 +1,6 @@
 import { pool } from '../config/db'
-import { IProductDAO, Product } from '../../types/products'
-import { ProductInput } from 'backend/DTOs/products.dto'
+import { IProductDAO, Product } from '../types/products'
+import { ProductInput } from '../DTOs/products.dto'
 
 export class ProductDAO implements IProductDAO {
   async getAll(): Promise<Product[]> {

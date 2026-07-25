@@ -1,23 +1,17 @@
 import { Request, Response } from 'express'
 
-import { ProductDAO } from '../src/DAO/ProductDAO'
+import { ProductDAO } from '../DAO/ProductDAO'
 import { ProductDto } from '../DTOs/products.dto'
 
 const productDao = new ProductDAO()
 
 export const getProducts = async (req: Request, res: Response) => {
-  // 1. Obtener todos los usuarios
   try {
     const products = await productDao.getAll()
-    console.log(products)
     return res.status(200).json({ data: products })
   } catch (error) {
     return res.status(500).json({ message: 'Error al mapear keys' })
   }
-
-  // 2. Crear un nuevo usuario
-  // const newId = await productDao.create({ name: 'Ana', email: 'ana@example.com' })
-  // console.log(`Usuario creado con ID: ${newId}`)
 }
 
 export const getProductById = async (
