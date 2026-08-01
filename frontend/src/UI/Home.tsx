@@ -51,7 +51,7 @@ export default function Home() {
   // Para los inputs radio
   const nameCategory = ['prime', 'home', 'sale', 'alternative', 'todo']
 
-  let convertCat: {
+  const convertCat: {
     value: string
     label: string
   }[] = nameCategory.map((name) => ({

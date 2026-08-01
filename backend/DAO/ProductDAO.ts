@@ -20,7 +20,8 @@ export class ProductDAO implements IProductDAO {
     const [rows, err] = await pool.query(SQL_QUERY, [id])
     if (err) throw err
     const result = rows as Product[]
-    return result.length > 0 ? result[0] : null
+    // return result.length > 0 ? result[0] : null
+    return result[0] ?? null
   }
 
   async create(product: ProductInput): Promise<Product | null> {
