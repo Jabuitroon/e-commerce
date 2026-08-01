@@ -27,25 +27,12 @@ export interface Order {
   ord_updated_at: Date
 }
 
-export interface CartItem {
-  productId: number
-  quantity: number
-}
-
 export interface CheckoutResult {
   orderId: number
   subtotal: number
   discount: number
   shipping: number
   total: number
-}
-
-export interface Product {
-  pro_id: number
-  pro_precio: number
-  pro_stock: number
-  pro_sale: boolean | number
-  pro_descuento_porcentaje: number
 }
 
 export interface PaginatedOrders {

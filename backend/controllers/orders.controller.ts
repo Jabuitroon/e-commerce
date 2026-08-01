@@ -8,18 +8,16 @@ import {
   getValidNextStatuses,
   isOrderStatus,
 } from '../services/orderStatusMachine'
-import { OrdersFilterDTO } from 'backend/DTOs/orders.dto'
-import { Order } from 'backend/types/order'
+import { OrdersFilterDTO } from '../DTOs/orders.dto'
 
 const orderDao = new OrdersDAO()
 
-export const listOrders = async (
+export const getOrders = async (
   req: Request,
   res: Response,
-  next: Function,
-) => {
+  next: NextFunction,
+): Promise<void> => {
   try {
-    // const { page, limit, status, customerId, from, to } =
     const filterData = OrdersFilterDTO.parse(req.query)
     const result = await orderDao.getAll({
       page: filterData.page,
@@ -29,7 +27,7 @@ export const listOrders = async (
       from: filterData.from,
       to: filterData.to,
     })
-    return res.status(200).json(result)
+    res.status(200).json(result)
   } catch (err) {
     next(err)
   }
@@ -39,13 +37,14 @@ export const getOrder = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
     const order = await orderDao.findById(req.params.id)
     if (!order) {
-      return res.status(404).json({ message: 'Orden no encontrada' })
+      res.status(404).json({ message: 'Orden no encontrada' })
+      return
     }
-    return res.status(200).json(order)
+    res.status(200).json(order)
   } catch (err) {
     next(err)
   }

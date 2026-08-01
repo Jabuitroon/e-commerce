@@ -1,4 +1,5 @@
 import express from 'express'
+import cron from 'node-cron'
 import { Request, Response } from 'express'
 
 import cors from 'cors'
@@ -6,10 +7,19 @@ import { pool } from './config/db'
 
 import bcrypt from 'bcrypt'
 import productsRoutes from './routes/products.routes'
+import orderRoutes from './routes/order.routes'
+import checkoutRoutes from './routes/checkout.routes'
+import stripeWebhookRoutes from './routes/stripeWebhook.routes'
 import aiRouter from './routes/ai.routes'
+import { expireStaleOrders } from './jobs/expireOrdersJob';
 import { generateToken } from './middlewares/auth.middleware'
 
 const app = express()
+app.use(
+  '/api/webhooks/stripe',
+  express.raw({ type: 'application/json' }),
+  stripeWebhookRoutes,
+)
 app.use(express.json())
 const port = process.env.PORTT ?? 3000
 
@@ -17,7 +27,16 @@ app.set('trust proxy', 1)
 
 app.use(cors())
 app.use(productsRoutes)
+app.use('/api/admin', orderRoutes)
+app.use('/api', checkoutRoutes)
 app.use(aiRouter)
+
+// Corre cada minuto: cancela órdenes pendientes vencidas y libera su stock.
+cron.schedule('* * * * *', () => {
+  expireStaleOrders().catch((err) =>
+    console.error('expireStaleOrders falló:', err),
+  )
+})
 
 // Promesas en paralelo https://khru.gitbooks.io/typescript/content/promesas.html
 app.get('/products', async (req: Request, res: Response): Promise<any> => {
@@ -66,8 +85,8 @@ app.post('/login', async (req: Request, res: Response): Promise<any> => {
   const { username, password } = req.body
   const SQL_QUERY = 'SELECT * FROM tbl_usuario WHERE usu_nombre = ?'
   try {
-    const [result] = await pool.query(SQL_QUERY, [username]);
-    const users = result as any[];
+    const [result] = await pool.query(SQL_QUERY, [username])
+    const users = result as any[]
     if (users.length === 0) {
       return res.status(401).json({ msg: 'No existe el usuario' })
     }
