@@ -1,23 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-import { IUser, Role } from '../types/user'
-interface JwtRequest extends Request {
-  user?: {
-    usu_id: number
-    usu_nombre: string
-    usu_rol: Role
-  }
-}
+import { IUser } from '../types/user'
 
 export const authentication = (
-  req: JwtRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   const authHeader = req.headers.authorization
   if (!authHeader) {
-    return res.status(401).json('No authorization header found')
+    res.status(401).json('No authorization header found')
+    return
   }
 
   const token = authHeader.split(' ')[1] // Token structure is 'Bearer <token>'
@@ -26,7 +20,8 @@ export const authentication = (
     req.user = decoded as IUser
     next()
   } catch (error) {
-    return res.status(401).json('Invalid token')
+    res.status(401).json('Invalid token')
+    return
   }
 }
 

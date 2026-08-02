@@ -3,12 +3,12 @@ export interface IUser {
   usu_nombre: string
   usu_rol: Role
 }
-
+ 
 export enum Role {
-  administrador,
-  cliente,
+  ADMINISTRADOR = 'administrador',
+  CLIENTE = 'cliente',
 }
-
+ 
 export interface IUserDao {
   findById(id: number): Promise<IUser | null>
   findAll(): Promise<IUser[]>
