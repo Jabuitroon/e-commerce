@@ -51,10 +51,8 @@ export async function handleStripeWebhook(
     const newStatus =
       event.type === 'payment_intent.succeeded' ? 'pagado' : 'pago_fallido'
 
-    const previousStatus = order.ord_estado
     await ordersDAO.updateStatus({
       orderId: order.ord_id,
-      previousStatus,
       newStatus,
       reason: `Actualizado automáticamente por webhook de Stripe: ${event.type}`,
     })

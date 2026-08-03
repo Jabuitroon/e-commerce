@@ -3,11 +3,34 @@ import {
   ListOrdersParams,
   Order,
   OrderStatus,
-  OrderStatusChange,
   PaginatedOrders,
+  UpdateStatusParams,
 } from '../types/order'
 import { pool } from '../config/db'
 import { RowDataPacket } from 'mysql2/promise'
+
+import {
+  isValidTransition,
+  getValidNextStatuses,
+} from '../services/orderStatusMachine'
+
+export class OrderNotFoundError extends Error {
+  constructor(orderId: number) {
+    super(`Orden ${orderId} no encontrada`)
+  }
+}
+
+export class InvalidTransitionError extends Error {
+  validNextStatuses: OrderStatus[]
+  constructor(
+    current: OrderStatus,
+    attempted: OrderStatus,
+    validNextStatuses: readonly OrderStatus[],
+  ) {
+    super(`Transición inválida: '${current}' -> '${attempted}'`)
+    this.validNextStatuses = [...validNextStatuses]
+  }
+}
 
 const DEFAULT_PAGE_SIZE = 20
 
@@ -105,13 +128,30 @@ export class OrdersDAO implements IOrdersDAO {
 
   async updateStatus({
     orderId,
-    previousStatus,
     newStatus,
     reason,
-  }: OrderStatusChange): Promise<boolean> {
+  }: UpdateStatusParams): Promise<Order> {
     const connection = await pool.getConnection()
     try {
       await connection.beginTransaction()
+
+      const [rows] = await connection.query<RowDataPacket[]>(
+        'SELECT ord_estado FROM tbl_orden WHERE ord_id = ? FOR UPDATE',
+        [orderId],
+      )
+      const current = rows[0]
+      if (!current) {
+        throw new OrderNotFoundError(orderId)
+      }
+      const previousStatus = current.ord_estado as OrderStatus
+
+      if (!isValidTransition(previousStatus, newStatus)) {
+        throw new InvalidTransitionError(
+          previousStatus,
+          newStatus,
+          getValidNextStatuses(previousStatus),
+        )
+      }
 
       const reasonColumn = REASON_COLUMN_BY_STATUS[newStatus]
       if (reasonColumn) {
@@ -126,15 +166,10 @@ export class OrdersDAO implements IOrdersDAO {
         )
       }
 
-      await connection.query('UPDATE orders SET status = ? WHERE id = ?', [
-        newStatus,
-        orderId,
-      ])
-
       await connection.query(
-        `INSERT INTO tbl_orden_historial (his_id_orden, his_estado_anterior, his_estado_nuevo, his_id_usuario)
-       VALUES (?, ?, ?, ?)`,
-        [orderId, previousStatus, newStatus, reason],
+        `INSERT INTO tbl_orden_historial (his_id_orden, his_estado_anterior, his_estado_nuevo)
+       VALUES (?, ?, ?)`,
+        [orderId, previousStatus, newStatus],
       )
 
       await connection.commit()
@@ -144,10 +179,11 @@ export class OrdersDAO implements IOrdersDAO {
     } finally {
       connection.release()
     }
-    return true
+
+    return (await this.findById(String(orderId))) as Order
   }
 
-  async getHistory(orderId: string): Promise<OrderStatusChange[]> {
+  async getHistory(orderId: string): Promise<UpdateStatusParams[]> {
     const [rows] = await pool.query(
       `SELECT h.his_id, h.his_estado_anterior, h.his_estado_nuevo,
             h.his_id_usuario, u.usu_nombre AS changed_by_name, h.his_created_at
@@ -157,6 +193,6 @@ export class OrdersDAO implements IOrdersDAO {
      ORDER BY h.his_created_at DESC`,
       [orderId],
     )
-    return rows as OrderStatusChange[]
+    return rows as UpdateStatusParams[]
   }
 }

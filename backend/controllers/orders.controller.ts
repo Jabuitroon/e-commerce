@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 
 import { OrdersDAO } from '../DAO/OrdersDAO'
-// import { ProductDto } from '../DTOs/products.dto'
 
 import {
-  isValidTransition,
-  getValidNextStatuses,
-  isOrderStatus,
+  isValidAdminTransition,
+  getValidAdminNextStatuses,
 } from '../services/orderStatusMachine'
 import { OrdersFilterDTO } from '../DTOs/orders.dto'
+import { OrderStatus } from 'backend/types/order'
 
 const orderDao = new OrdersDAO()
 
@@ -58,11 +57,11 @@ export const updateOrderStatus = async (
   try {
     const { id } = req.params
     const { newStatus, reason } = req.body as {
-      newStatus?: string
+      newStatus?: OrderStatus
       reason?: string
     }
 
-    if (!newStatus || !isOrderStatus(newStatus)) {
+    if (!newStatus) {
       res
         .status(400)
         .json({ message: 'newStatus es requerido y debe ser un estado válido' })
@@ -75,10 +74,10 @@ export const updateOrderStatus = async (
       return
     }
 
-    if (!isValidTransition(order.ord_estado, newStatus)) {
+    if (!isValidAdminTransition(order.ord_estado, newStatus)) {
       res.status(422).json({
         message: `Transición inválida: '${order.ord_estado}' -> '${newStatus}'`,
-        validNextStatuses: getValidNextStatuses(order.ord_estado),
+        validNextStatuses: getValidAdminNextStatuses(order.ord_estado),
       })
       return
     }
@@ -92,7 +91,6 @@ export const updateOrderStatus = async (
 
     await orderDao.updateStatus({
       orderId: Number(id),
-      previousStatus: order.ord_estado,
       newStatus,
       reason: reason ?? null,
     })

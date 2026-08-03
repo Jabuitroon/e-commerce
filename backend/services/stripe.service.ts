@@ -14,7 +14,7 @@ export async function createPaymentIntent(
 ): Promise<Stripe.PaymentIntent> {
   return stripe.paymentIntents.create({
     amount: Math.round(amountCOP),
-    currency: 'cop',
+    currency: 'usd',
     metadata: { orderId: String(orderId) },
   })
 }

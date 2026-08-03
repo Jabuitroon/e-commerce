@@ -16,7 +16,7 @@ export class CheckoutError extends Error {
 
 interface ProductRow extends Product, RowDataPacket {}
 interface ItemToInsert {
-  productId: number
+  productId: string
   quantity: number
   unitPrice: number
 }
@@ -27,7 +27,7 @@ interface OrderLookupRow extends RowDataPacket {
 }
 
 interface OrderItemRow extends RowDataPacket {
-  odt_id_producto: number
+  odt_id_producto: string
   odt_cantidad: number
 }
 
@@ -46,15 +46,15 @@ export class CheckoutDAO implements ICheckoutDAO {
       const itemsToInsert: ItemToInsert[] = []
 
       for (const item of cartItems) {
+        // Quité pro_descuento_porcentaje pendiendte por agregar en la tabla dentro de la bd
         const [rows] = await connection.query<ProductRow[]>(
-          `SELECT pro_id, pro_precio, pro_stock, pro_sale, pro_descuento_porcentaje
+          `SELECT pro_id, pro_price, pro_stock, pro_sale
          FROM tbl_producto
          WHERE pro_id = ?
          FOR UPDATE`,
           [item.productId],
         )
         const product = rows[0]
-
         if (!product) {
           throw new CheckoutError(`Producto ${item.productId} no existe`, 404)
         }
@@ -64,8 +64,9 @@ export class CheckoutDAO implements ICheckoutDAO {
             409,
           )
         }
-
-        const listPrice = Number(product.pro_precio)
+        
+        console.log('Product fetched:', product, 'tipo de id', typeof(item.productId)) // Debugging line
+        const listPrice = Number(product.pro_price)
         const hasDiscount =
           Boolean(product.pro_sale) &&
           Number(product.pro_descuento_porcentaje) > 0

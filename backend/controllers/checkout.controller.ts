@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { CheckoutDAO, CheckoutError } from '../DAO/CheckoutDAO'
-import * as stripeService from '../services/stripe.service';
+import * as stripeService from '../services/stripe.service'
 import { CartItem } from '../types/checkout'
 
 const checkoutDAO = new CheckoutDAO()
@@ -16,7 +16,7 @@ export const checkout = async (
 ) => {
   try {
     const { items } = req.body as CheckoutBody
-    const userId = req.user!.id // asume middleware de auth que setea req.user
+    const userId = req.user!.usu_id
 
     const order = await checkoutDAO.create(userId, items)
 

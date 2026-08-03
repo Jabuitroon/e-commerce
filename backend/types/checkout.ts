@@ -2,13 +2,13 @@ import { PoolConnection } from 'mysql2/promise'
 import { CheckoutResult } from './order'
 
 export interface CartItem {
-  productId: number
+  productId: string
   quantity: number
 }
 
 export interface Product {
-  pro_id: number
-  pro_precio: number
+  pro_id: string
+  pro_price: number
   pro_stock: number
   pro_sale: boolean | number
   pro_descuento_porcentaje: number

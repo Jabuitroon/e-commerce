@@ -51,11 +51,10 @@ export interface ListOrdersParams {
   to?: string
 }
 
-export interface OrderStatusChange {
+export interface UpdateStatusParams {
   orderId: number
-  previousStatus: string
-  newStatus: string
-  reason: string | null
+  newStatus: OrderStatus
+  reason?: string | null
 }
 
 export interface IOrdersDAO {
@@ -66,9 +65,8 @@ export interface IOrdersDAO {
   //   create(order: Order): Promise<Order | null>
   updateStatus({
     orderId,
-    previousStatus,
     newStatus,
     reason,
-  }: OrderStatusChange): Promise<boolean>
-  getHistory(orderId: string): Promise<OrderStatusChange[]>
+  }: UpdateStatusParams): Promise<Order>
+  getHistory(orderId: string): Promise<UpdateStatusParams[]>
 }
