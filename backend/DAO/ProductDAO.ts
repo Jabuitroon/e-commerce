@@ -17,8 +17,7 @@ export class ProductDAO implements IProductDAO {
       WHERE tbl_producto.pro_id = ?
     `
 
-    const [rows, err] = await pool.query(SQL_QUERY, [id])
-    if (err) throw err
+    const [rows] = await pool.query(SQL_QUERY, [id])
     const result = rows as Product[]
     // return result.length > 0 ? result[0] : null
     return result[0] ?? null
@@ -103,5 +102,41 @@ export class ProductDAO implements IProductDAO {
     const SQL_QUERY = 'DELETE FROM tbl_producto WHERE pro_id = ?'
     const [deleteResult] = await pool.query(SQL_QUERY, [id])
     return (deleteResult as any).affectedRows > 0
+  }
+
+  async getRelatedOrders(proId: string): Promise<any[]> {
+    const SQL_QUERY = `
+    SELECT odt_id, odt_id_orden, odt_cantidad, odt_precio_unitario 
+    FROM tbl_orden_detalle 
+    WHERE odt_id_producto = ?
+  `
+    const [rows] = await pool.query(SQL_QUERY, [proId])
+    return rows as any[]
+  }
+  async deleteCascade(id: string): Promise<boolean> {
+    const connection = await pool.getConnection()
+    try {
+      await connection.beginTransaction()
+
+      // 1. Eliminar referencias en la tabla detalle
+      await connection.query(
+        'DELETE FROM tbl_orden_detalle WHERE odt_id_producto = ?',
+        [id],
+      )
+
+      // 2. Eliminar el producto principal
+      const [result] = await connection.query(
+        'DELETE FROM tbl_producto WHERE pro_id = ?',
+        [id],
+      )
+
+      await connection.commit()
+      return (result as any).affectedRows > 0
+    } catch (error) {
+      await connection.rollback()
+      throw error
+    } finally {
+      connection.release()
+    }
   }
 }

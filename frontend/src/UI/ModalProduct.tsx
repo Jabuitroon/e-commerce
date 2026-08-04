@@ -1,6 +1,6 @@
 import { MouseEventHandler } from 'react'
 import UseProductManager from '../components/Forms'
-import { Product } from '../../../types/types/src/types'
+import { Product } from '../interfaces/interfaces'
 
 type modalProps = {
   selectedProduct: Product | undefined

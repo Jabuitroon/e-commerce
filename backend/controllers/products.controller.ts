@@ -19,6 +19,7 @@ export const getProductById = async (
   res: Response,
 ): Promise<Response> => {
   const { id } = req.params
+  console.log('ID recibido:', id) // Agrega este log para verificar el valor de id
   try {
     const product = await productDao.findById(id)
     if (!product) {
@@ -84,17 +85,45 @@ export const deleteProduct = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
+  const { id } = req.params
+  const force = req.query.force === 'true'
+
   try {
-    const deleteBoolean = await productDao.delete(req.params.id)
+    // Si el usuario ya confirmó eliminar todo (cascada)
+    if (force) {
+      const deleted = await productDao.deleteCascade(id)
+      if (!deleted)
+        return res.status(404).json({ message: 'Producto no encontrado' })
+      return res
+        .status(200)
+        .json({
+          msg: 'Producto y sus registros asociados fueron eliminados',
+          id,
+        })
+    }
+
+    // Intento de eliminación normal
+    const deleteBoolean = await productDao.delete(id)
     if (!deleteBoolean) {
       return res.status(404).json({ message: 'Error al eliminar el producto' })
     }
-    return res
-      .status(200)
-      .json({ msg: 'Producto Eliminado', id: req.params.id })
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: 'Error en la consulta a la base de datos' })
+
+    return res.status(200).json({ msg: 'Producto Eliminado', id })
+  } catch (error: any) {
+    // Captura del error de restricción de clave foránea en MySQL
+    if (error?.errno === 1451 || error?.code === 'ER_ROW_IS_REFERENCED_2') {
+      const relatedOrders = await productDao.getRelatedOrders(id)
+
+      return res.status(409).json({
+        code: 'HAS_DEPENDENCIES',
+        message: 'El producto está asociado a órdenes existentes.',
+        relatedRecords: relatedOrders,
+      })
+    }
+
+    return res.status(500).json({
+      message: 'Error en la consulta a la base de datos',
+      error: error.message || error,
+    })
   }
 }

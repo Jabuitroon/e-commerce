@@ -29,3 +29,22 @@ export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
   content: string
 }
+
+export interface RelatedOrder {
+  odt_id: number
+  odt_id_orden: number
+  odt_cantidad: number
+  odt_precio_unitario: number
+}
+
+export interface ErrorDependenciesResponse {
+  code: string
+  message: string
+  relatedRecords: RelatedOrder[]
+}
+
+export interface ModalState {
+  isOpen: boolean
+  productId: string | null
+  records: RelatedOrder[]
+}

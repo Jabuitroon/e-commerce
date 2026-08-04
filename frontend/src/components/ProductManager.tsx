@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Product } from '../../../types/types/src/types'
+import { Product } from '../interfaces/interfaces'
 import { getProducts } from '../services/getProducts'
 import { deleteProduct } from '../services/deleteProduct'
 import { DataProducts } from '../types'
@@ -9,7 +9,7 @@ export default function ProductManagement() {
   // Data inicial
   const [products, setInitProducts] = useState<DataProducts>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
-    undefined
+    undefined,
   )
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -38,7 +38,7 @@ export default function ProductManagement() {
   const filteredProducts = products.filter(
     (product) =>
       product.pro_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.pro_title.toLowerCase().includes(searchTerm.toLowerCase())
+      product.pro_title.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   // Controladores CRUD
@@ -197,15 +197,16 @@ export default function ProductManagement() {
                           Number(product.pro_stock) > 50
                             ? 'bg-green-100 text-green-800'
                             : Number(product.pro_stock) > 20
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-red-100 text-red-800'
                         }`}
                       >
                         {product.pro_stock}
                       </span>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                      {product.pro_update_at.substring(0, 10)} / {product.pro_update_at.substring(11, 16)}
+                      {product.pro_update_at.substring(0, 10)} /{' '}
+                      {product.pro_update_at.substring(11, 16)}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
                       <div className='flex justify-end gap-2'>
