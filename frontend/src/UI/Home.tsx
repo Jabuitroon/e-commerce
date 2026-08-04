@@ -145,7 +145,13 @@ export default function Home() {
                 variant='ghost'
                 className='relative'
               >
-                <ShoppingCart className='h-6 w-6' />
+                <ShoppingCart
+                  className={`h-6 w-6 transition-colors ${
+                    isCartOpen
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                />
               </Button>
             </div>
           </div>
@@ -236,20 +242,8 @@ export default function Home() {
           </div>
         )}
         {isCartOpen && (
-          <div className='absolute top-0 right-0 w-2xl bg-white shadow-lg z-50 transition-all duration-300 ease-in-out h-screen'>
-            <div className='container mx-auto px-4 py-4 overflow-y-auto'>
-              <div className='w-full flex justify-end'>
-                <button
-                  className='flex items-center text-black bg-[#e7ecef] hover:bg-gray-100 px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer'
-                  onClick={toggleCart}
-                >
-                  <X className='h-5 w-5' />
-                </button>
-              </div>
-              <div className='flex flex-col gap-6 h-screen'>
-                <Cart />
-              </div>
-            </div>
+          <div className='absolute right-0 shadow-lg z-50 transition-all duration-300 ease-in-out'>
+            <Cart />
           </div>
         )}
         {/* Overlay para cerrar el menú al hacer clic fuera */}
