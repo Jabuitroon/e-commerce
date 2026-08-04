@@ -243,7 +243,7 @@ export default function Home() {
         )}
         {isCartOpen && (
           <div className='absolute right-0 shadow-lg z-50 transition-all duration-300 ease-in-out'>
-            <Cart />
+            <Cart onCloseCart={toggleCart} />
           </div>
         )}
         {/* Overlay para cerrar el menú al hacer clic fuera */}

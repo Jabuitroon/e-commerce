@@ -6,7 +6,7 @@ export const useAuthStore = create(
   persist<StateToken & Actions>(
     (set) => ({
       token: '',
-      profile: null,
+      profile: '',
       isAuth: false,
       setToken: (token: string) =>
         set((state) => ({
@@ -26,6 +26,6 @@ export const useAuthStore = create(
         isAuth: false,
       }),
     }),
-    { name: 'auth' }
-  )
+    { name: 'auth' },
+  ),
 )

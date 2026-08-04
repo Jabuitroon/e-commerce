@@ -3,28 +3,24 @@ import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
 import { useCart } from '../hooks/custHooks'
 import { CheckoutForm } from '../components/CheckoutForm'
-import { useAuthStore } from '../../store/auth' // O tu store de auth
+import { useAuthStore } from '../../store/auth'
+import { getTokenFromLocalStorage } from '../services/getToken'
+import { createCheckoutSession } from '../services/checkouts'
+import { StepProgressBar, Step } from '../components/StepProgressBar'
 
-const stripePromise = loadStripe('pk_test_51TzdnhLKGqyknYdO9d3x84SXCNFYlIwfKx6T6nm7TOiEEYULfToybuRbRuaUQMT8vOb1nF1weaKIFYJ7VrC1gPHg00YBPoHVZM')
+const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+const stripePromise = loadStripe(stripePublicKey)
 
-// Función helper por si prefieres extraerlo directamente del localStorage
-const getTokenFromLocalStorage = (): string | null => {
-  try {
-    const authData = localStorage.getItem('auth')
-    if (!authData) return null
-    const parsed = JSON.parse(authData)
-    return parsed?.state?.token || null
-  } catch (error) {
-    console.error('Error al obtener el token del localStorage:', error)
-    return null
-  }
-}
+const CHECKOUT_STEPS: Step[] = [
+  { id: 1, label: 'Confirmar orden' },
+  { id: 2, label: 'Método de pago' },
+  { id: 3, label: 'Confirmación de pago' },
+]
 
 export function CheckoutPage() {
   const { cart } = useCart()
-  // También puedes obtener el token directo de tu store de Zustand si lo tienes así:
   const tokenFromStore = useAuthStore((state) => state.token)
-  
+
   const [clientSecret, setClientSecret] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,28 +40,10 @@ export function CheckoutPage() {
       quantity: Number(item.count),
     }))
 
-    // 3. Petición HTTP con Authorization Header
-    fetch('http://localhost:3000/api/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({ items: itemsPayload }),
-    })
-      .then((res) => {
-        if (res.status === 401 || res.status === 403) {
-          throw new Error('Sesión no válida o expirada. Por favor, vuelve a iniciar sesión.')
-        }
-        if (!res.ok) throw new Error('Error al generar la orden')
-        return res.json()
-      })
+    // 3. Petición HTTP con Authorization Header en servicio de checkouts
+    createCheckoutSession(itemsPayload, token)
       .then((data) => {
-        if (data.clientSecret) {
-          setClientSecret(data.clientSecret)
-        } else {
-          throw new Error('No se recibió el clientSecret de la API')
-        }
+        setClientSecret(data.clientSecret)
       })
       .catch((err: Error) => {
         console.error(err)
@@ -76,16 +54,18 @@ export function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
+      <div className='flex min-h-[60vh] items-center justify-center'>
+        <div className='h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent'></div>
       </div>
     )
   }
 
   if (error || !clientSecret) {
     return (
-      <div className="mx-auto max-w-md my-12 rounded-xl bg-red-50 p-6 text-center text-red-700 border border-red-200 shadow-sm">
-        <p className="font-medium">{error || 'El carrito está vacío o no se pudo iniciar el proceso.'}</p>
+      <div className='mx-auto my-12 max-w-md rounded-xl border border-red-200 bg-red-50 p-6 text-center text-red-700 shadow-sm'>
+        <p className='font-medium'>
+          {error || 'El carrito está vacío o no se pudo iniciar el proceso.'}
+        </p>
       </div>
     )
   }
@@ -100,6 +80,10 @@ export function CheckoutPage() {
 
   return (
     <Elements options={{ clientSecret, appearance }} stripe={stripePromise}>
+      {/* Paso 1 Activo */}
+      <div className='container mx-auto px-4 pt-24'>
+        <StepProgressBar steps={CHECKOUT_STEPS} currentStep={2} />
+      </div>
       <CheckoutForm />
     </Elements>
   )

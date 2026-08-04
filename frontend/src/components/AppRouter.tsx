@@ -2,7 +2,9 @@ import { Products } from './Products'
 import { Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from './ProtectedRoute'
 
+import { CartPage } from '../pages/CartPage'
 import { CheckoutPage } from '../pages/CheckoutPage'
+import { OrderConfirmationPage } from '../pages/OrderConfirmationPage'
 import { useAuthStore } from '../../store/auth'
 import { Register } from '../components/Register'
 import { Login } from '../components/Login'
@@ -16,7 +18,9 @@ export function AppRouter() {
         <Route element={<ProtectedRoute IsAllowed={isAuth} />}>
           <Route path='/profile' element={<Profile />} />
         </Route>
+        <Route path='/cart' element={<CartPage />} />
         <Route path='/checkout' element={<CheckoutPage />} />
+        <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
         <Route path='/' element={<Products />} />
