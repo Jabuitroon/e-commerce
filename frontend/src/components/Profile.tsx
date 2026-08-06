@@ -1,5 +1,5 @@
 import { useAuthStore } from '../../store/auth'
-import ProductManagement from './ProductManager'
+import ProductManagement from './ProductManager/ProductManager'
 
 export const Profile = () => {
   const logout = useAuthStore((state) => state.logout)

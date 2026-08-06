@@ -19,6 +19,10 @@ ecommerce/
 ├── frontend/
 │ ├── public/
 │ ├── src/
+│   ├── services/        # Servicios API (HTTP)
+│   ├── hooks/
+│   └── components/
+│       └── products/
 │ ├── .gitignore
 │ ├── README.md
 │ ├── eslint.config.js
