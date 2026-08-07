@@ -11,7 +11,7 @@ import {
   FaSortAmountUpAlt,
 } from 'react-icons/fa'
 
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '../../store/auth.store'
 import { useNavigate } from 'react-router-dom'
 import { Chat } from './Chat'
 
@@ -98,7 +98,7 @@ export const Products = () => {
   const { products } = context
   const { addToCart } = useCart()
 
-  const setIsAllow = useAuthStore((state) => state.isAuth)
+  const isAllow = useAuthStore((s) => !!s.token && !!s.profile)
   const navigateTo = useNavigate()
 
   return (
@@ -219,7 +219,7 @@ export const Products = () => {
                         variant='ghost'
                         className='h-10 w-10 p-0'
                         onClick={() => {
-                          setIsAllow == true
+                          isAllow
                             ? addToCart(objProduct)
                             : navigateTo('login')
                         }}

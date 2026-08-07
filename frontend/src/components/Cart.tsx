@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../hooks/custHooks'
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '../../store/auth.store'
 import { ProductInCart } from '../interfaces/interfaces'
 
 interface CartProps {
@@ -13,7 +13,8 @@ interface CartProps {
 export function Cart({ onViewBag, onCloseCart }: CartProps) {
   const { cart, addToCart, decreaseQuantify, removeFromCart, clearCart } =
     useCart()
-  const isAuth = useAuthStore((state) => state.isAuth)
+  // const hasHydrated = useAuthStore((state) => state.hasHydrated)
+  const isAuth = useAuthStore((state) => !!state.token && !!state.profile)
   const cartCheckId = useId()
   const navigate = useNavigate()
 
@@ -23,6 +24,7 @@ export function Cart({ onViewBag, onCloseCart }: CartProps) {
   }
 
   // Manejo de estados vacíos / no autenticado
+  // if (!hasHydrated) return <Loading />; 
   if (!isAuth) {
     return (
       <div className='w-80 rounded-2xl bg-white p-6 shadow-xl border border-gray-100 text-center'>

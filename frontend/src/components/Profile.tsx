@@ -1,4 +1,4 @@
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '../../store/auth.store'
 import ProductManagement from './ProductManager/ProductManager'
 
 export const Profile = () => {

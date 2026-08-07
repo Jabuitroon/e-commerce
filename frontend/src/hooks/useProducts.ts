@@ -3,7 +3,7 @@ import { Product, ModalState } from '../interfaces/interfaces'
 import { DataProducts } from '../types'
 import { getProducts } from '../services/getProducts'
 import { deleteProductApi } from '../services/productService'
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '../../store/auth.store'
 
 export const useProducts = () => {
   const [products, setProducts] = useState<DataProducts>([])

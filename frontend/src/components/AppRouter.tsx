@@ -1,28 +1,26 @@
 import { Products } from './Products'
 import { Routes, Route } from 'react-router-dom'
-import { ProtectedRoute } from './ProtectedRoute'
+import { ProtectedRoute } from '../routes/ProtectedRoute'
 
 import { CartPage } from '../pages/CartPage'
 import { CheckoutPage } from '../pages/CheckoutPage'
 import { OrderConfirmationPage } from '../pages/OrderConfirmationPage'
-import { useAuthStore } from '../../store/auth'
 import { Register } from '../components/Register'
-import { Login } from '../components/Login'
+import { LoginPage } from '../pages/LoginPage'
 import { Profile } from './Profile'
 
 export function AppRouter() {
-  const isAuth = useAuthStore((state) => state.isAuth)
   return (
     <>
       <Routes>
-        <Route element={<ProtectedRoute IsAllowed={isAuth} />}>
+        <Route element={<ProtectedRoute allowedRoles={['administrador']} />}>
           <Route path='/profile' element={<Profile />} />
         </Route>
         <Route path='/cart' element={<CartPage />} />
         <Route path='/checkout' element={<CheckoutPage />} />
-        <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+        <Route path='/order-confirmation' element={<OrderConfirmationPage />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/login' element={<Login />} />
+        <Route path='/login' element={<LoginPage />} />
         <Route path='/' element={<Products />} />
       </Routes>
     </>

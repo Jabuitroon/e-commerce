@@ -4,10 +4,10 @@ import { ShoppingCart, User, MapPin, ChevronDown, X } from 'lucide-react'
 import { Search } from '../components/Search'
 import { Cart } from '../components/Cart'
 import { Link } from 'react-router-dom'
-import { useAuthStore } from '../../store/auth'
+import { useAuthStore } from '../../store/auth.store'
 
 export default function Home() {
-  const isAuth = useAuthStore((state) => state.isAuth)
+  const isAuth = useAuthStore((s) => !!s.token && !!s.profile)
   const showProfile = isAuth ? 'profile' : 'login'
 
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

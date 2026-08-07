@@ -10,7 +10,7 @@ interface DeleteProductResponse {
 
 export const deleteProductApi = async (
   id: string,
-  token: string,
+  token: string | null,
   force = false,
 ): Promise<DeleteProductResponse> => {
   const endpoint = force
