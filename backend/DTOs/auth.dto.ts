@@ -10,3 +10,11 @@ export const loginSchema = z.object({
 })
 
 export type LoginDTO = z.infer<typeof loginSchema>
+
+export const authHeaderSchema = z.object({
+  authorization: z
+    .string({ message: 'El encabezado Authorization es requerido' })
+    .regex(/^Bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/, {
+      message: 'Formato de Token inválido. Debe ser: Bearer <token>',
+    }),
+})

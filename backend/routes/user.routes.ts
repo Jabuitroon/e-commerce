@@ -1,3 +1,13 @@
+import { Router } from 'express'
+import { getProfile } from '../controllers/user.controller'
+import { authentication } from '../middlewares/auth.middleware'
+
+const router = Router()
+router.get('/profile', authentication, async (req, res) => {
+  await getProfile(req, res)
+})
+
+export default router
 // import express, { Router } from 'express'
 // import {
 //   protectedRoute,

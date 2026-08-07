@@ -13,6 +13,7 @@ import orderRoutes from './routes/order.routes'
 import checkoutRoutes from './routes/checkout.routes'
 import stripeWebhookRoutes from './routes/stripeWebhook.routes'
 import aiRouter from './routes/ai.routes'
+import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
 
 const app = express()
@@ -30,6 +31,7 @@ app.use(cors())
 app.use(productsRoutes)
 app.use('/api/admin', orderRoutes)
 app.use('/api', checkoutRoutes)
+app.use('/api', userRoutes)
 app.use('/api', authRoutes)
 app.use(aiRouter)
 
@@ -82,35 +84,6 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
     return res.status(500).json({ message: 'Error al loguearse' })
   }
 })
-
-
-// app.post('/login', async (req: Request, res: Response): Promise<any> => {
-//   const { email, password } = req.body
-//   const SQL_QUERY = 'SELECT * FROM tbl_usuario WHERE usu_email = ?'
-//   try {
-//     const [result] = await pool.query(SQL_QUERY, [email])
-//     const users = result as any[]
-//     if (users.length === 0) {
-//       return res.status(401).json({ msg: 'No existe el usuario' })
-//     }
-//     const user = users[0]
-//     const userId = user.usu_id
-//     const userHashedPassword = user.usu_contrasena
-//     const userrol = user.usu_rol
-//     console.log(userrol)
-
-//     const isMatch = await bcrypt.compare(password, userHashedPassword)
-
-//     if (isMatch) {
-//       const token = generateToken(userId, email, userrol)
-//       return res.status(200).json({ token })
-//     } else {
-//       return res.status(401).json({ msg: 'Login Incorrecto' })
-//     }
-//   } catch (error) {
-//     return res.status(500).json({ message: `${error}` })
-//   }
-// })
 
 // 1.) ruta perfiles 2.) Verificao que estoy autenticado 3.) devuelvo la info del usuario
 // app.get('/profile', authentication, profileHandler)

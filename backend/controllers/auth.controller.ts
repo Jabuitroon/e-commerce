@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import bcrypt from 'bcrypt'
-
 import { JwtRequest, Role } from '../types/user'
+import { loginSchema } from '../DTOs/auth.dto'
 import { login } from '../services/auth.service'
 
 export const loginUser = async (
@@ -9,13 +8,23 @@ export const loginUser = async (
   res: Response,
 ): Promise<Response> => {
   try {
+    const validateBody = loginSchema.safeParse(req.body)
+
+    if (!validateBody.success) {
+      return res.status(400).json({
+        error: 'Datos inválidos',
+        details: validateBody.error.format(),
+      })
+    }
+    req.body = validateBody.data
+
     const result = await login(req.body)
     return res.status(200).json(result)
   } catch (error) {
     if (error) {
-      console.log('Error en loginUser:', error)
+      return res.status(500).json({ message: `${error}` })
     }
-    return res.status(500).json({ message: `${error}` })
+    return res.status(500).json({ message: 'Error interno del servidor' })
   }
 }
 
@@ -45,8 +54,6 @@ export const loginUser = async (
 
 export function authorizeRoles(allowedRoles: Role[]) {
   return (req: JwtRequest, res: Response, next: NextFunction) => {
-    
-
     if (req.usu_id && !allowedRoles.includes(req.usu_rol)) {
       return res.status(403).json({
         message: `Forbidden, you are a ${req.usu_rol} and this service is only available for ${allowedRoles}`,
@@ -56,9 +63,9 @@ export function authorizeRoles(allowedRoles: Role[]) {
   }
 }
 
-  // 2. Crear un nuevo usuario
-  // const newId = await productDao.create({ name: 'Ana', email: 'ana@example.com' })
-  // console.log(`Usuario creado con ID: ${newId}`)
+// 2. Crear un nuevo usuario
+// const newId = await productDao.create({ name: 'Ana', email: 'ana@example.com' })
+// console.log(`Usuario creado con ID: ${newId}`)
 // export const profileHandler = (req: JwtRequest, res: Response) => {
 //   const user = req.user
 

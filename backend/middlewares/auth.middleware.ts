@@ -1,47 +1,40 @@
 import { Request, Response, NextFunction } from 'express'
-import { ZodObject, ZodError } from 'zod'
+import { authHeaderSchema } from '../DTOs/auth.dto'
 import jwt from 'jsonwebtoken'
 
 import { JwtRequest } from '../types/user'
-import { loginSchema } from 'backend/DTOs/auth.dto'
 
 export const authentication = (
   req: Request,
   res: Response,
   next: NextFunction,
 ): void => {
-  const authHeader = req.headers.authorization
-  if (!authHeader) {
-    res.status(401).json('No authorization header found')
-    return
-  }
-
-  const token = authHeader.split(' ')[1] // Token structure is 'Bearer <token>'
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY || 'shhh')
-    req.user = decoded as JwtRequest
+    const authHeader = req.headers.authorization
+    if (!authHeader) {
+      res.status(401).json('No authorization header found')
+      return
+    }
+
+    const token = authHeader.split(' ')[1]
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string,
+    ) as JwtRequest
+    req.user = decoded
     next()
-  } catch (error) {
-    res.status(401).json('Invalid token')
+  } catch (error: any) {
+    if (
+      error.name === 'JsonWebTokenError' ||
+      error.name === 'TokenExpiredError'
+    ) {
+      res.status(401).json({ error: 'Token inválido o expirado' })
+      return
+    }
+    res.status(500).json({ error: 'Error de autenticación' })
     return
   }
 }
-
-// export const generateToken = (
-//   userId: string,
-//   username: string,
-//   userrol: string,
-// ) => {
-//   return jwt.sign(
-//     {
-//       usu_id: userId,
-//       usu_nombre: username,
-//       usu_rol: userrol,
-//     },
-//     process.env.SECRET_KEY || 'shhh',
-//     { expiresIn: '1h' },
-//   )
-// }
 
 export const whitelistBody = (allowedFields: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
