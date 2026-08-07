@@ -1,46 +1,55 @@
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 
-import { IUser, Role } from '../types/user'
-interface JwtRequest extends Request {
-  user?: {
-    usu_id: number
-    usu_nombre: string
-    usu_rol: Role
-  }
-}
+import { JwtRequest, Role } from '../types/user'
+import { login } from '../services/auth.service'
 
-export const registerUser = async (req: Request, res: Response) => {
-  console.log('Register route hit')
-  const SQL_QUERY = 'INSERT INTO tbl_usuario set ?'
-
-  const { username, email, password } = req.body
-  const hashedPassword = await bcrypt.hash(password, 10)
+export const loginUser = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
-    conn.query(
-      SQL_QUERY,
-      {
-        usu_nombre: username,
-        usu_email: email,
-        usu_contrasena: hashedPassword,
-      },
-      (err, result) => {
-        if (err) throw err
-        return res.status(200).json({ msg: 'Add User' })
-      },
-    )
+    const result = await login(req.body)
+    return res.status(200).json(result)
   } catch (error) {
-    return res.status(500).json({ message: 'Error al loguearse' })
+    if (error) {
+      console.log('Error en loginUser:', error)
+    }
+    return res.status(500).json({ message: `${error}` })
   }
 }
+
+// export const registerUser = async (req: Request, res: Response) => {
+//   console.log('Register route hit')
+//   const SQL_QUERY = 'INSERT INTO tbl_usuario set ?'
+
+//   const { username, email, password } = req.body
+//   const hashedPassword = await bcrypt.hash(password, 10)
+//   try {
+//     conn.query(
+//       SQL_QUERY,
+//       {
+//         usu_nombre: username,
+//         usu_email: email,
+//         usu_contrasena: hashedPassword,
+//       },
+//       (err, result) => {
+//         if (err) throw err
+//         return res.status(200).json({ msg: 'Add User' })
+//       },
+//     )
+//   } catch (error) {
+//     return res.status(500).json({ message: 'Error al loguearse' })
+//   }
+// }
 
 export function authorizeRoles(allowedRoles: Role[]) {
   return (req: JwtRequest, res: Response, next: NextFunction) => {
-    const user = req.user
+    
 
-    if (user && !allowedRoles.includes(user.usu_rol)) {
+    if (req.usu_id && !allowedRoles.includes(req.usu_rol)) {
       return res.status(403).json({
-        message: `Forbidden, you are a ${user.usu_rol} and this service is only available for ${allowedRoles}`,
+        message: `Forbidden, you are a ${req.usu_rol} and this service is only available for ${allowedRoles}`,
       })
     }
     next()

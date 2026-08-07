@@ -1,9 +1,9 @@
-import { IUser } from './user'
+import { JwtRequest } from './user'
 
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser
+      user?: JwtRequest
     }
   }
 }
