@@ -1,4 +1,4 @@
-import { userData } from '../types'
+import { userDataLogin } from '../types'
 import { Perfil } from '../../store/auth.store'
 
 interface LoginResponse {
@@ -6,8 +6,8 @@ interface LoginResponse {
   msg?: string
 }
 
-export const loginService = async (credentials: userData): Promise<string> => {
-  const response = await fetch('http://localhost:3000/login', {
+export const loginService = async (credentials: userDataLogin): Promise<string> => {
+  const response = await fetch('http://localhost:3000/api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -23,7 +23,7 @@ export const loginService = async (credentials: userData): Promise<string> => {
 }
 
 export const getProfileService = async (token: string): Promise<Perfil> => {
-  const response = await fetch('/api/profile', {
+  const response = await fetch('http://localhost:3000/api/profile', {
     headers: { Authorization: `Bearer ${token}` },
   })
 

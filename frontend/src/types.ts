@@ -38,8 +38,7 @@ export type ApiGetProducts = {
   data: DataProducts
 }
 
-export type userData = {
-  username: string
+export type userDataLogin = {
   email: string
   password: string
 }

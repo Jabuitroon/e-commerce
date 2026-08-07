@@ -1,10 +1,9 @@
-// src/pages/LoginPage.tsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Perfil, useAuthStore } from '../../store/auth.store'
+import { useAuthStore } from '../../store/auth.store'
 import { loginService, getProfileService } from '../services/auth'
 import { LoginForm } from '../components/LoginForm'
-import { userData } from '../types'
+import { userDataLogin } from '../types'
 import shopping from '../assets/shopping.jpg'
 
 export function LoginPage() {
@@ -14,7 +13,7 @@ export function LoginPage() {
   const loginToStore = useAuthStore((state) => state.login)
   const navigate = useNavigate()
 
-  const handleLogin = async (data: userData) => {
+  const handleLogin = async (data: userDataLogin) => {
     setIsLoading(true)
     setErrorMsg(null)
 
@@ -23,16 +22,10 @@ export function LoginPage() {
       const token = await loginService(data)
 
       // 2. Obtener Perfil usando el token recibido
-      // const profile = await getProfileService(token)
+      const profile = await getProfileService(token)
 
       // 3. Guardar estado global atómicamente
-      const hardCodeProfile: Perfil = {
-        id_usuario: 1,
-        nombre: 'John Doe',
-        email: 'john.doe@example.com',
-        rol: 'administrador'
-      }
-      loginToStore(token, hardCodeProfile)
+      loginToStore(token, profile)
 
       // 4. Redirigir al inicio solo tras éxito
       navigate('/')

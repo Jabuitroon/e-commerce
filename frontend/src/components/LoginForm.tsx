@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { FaUser, FaShieldAlt } from 'react-icons/fa'
-import { userData } from '../types'
+import { userDataLogin } from '../types'
 
 interface LoginFormProps {
-  onSubmit: (data: userData) => Promise<void>
+  onSubmit: (data: userDataLogin) => Promise<void>
   isLoading: boolean
   apiError: string | null
 }
@@ -14,7 +14,7 @@ export function LoginForm({ onSubmit, isLoading, apiError }: LoginFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<userData>()
+  } = useForm<userDataLogin>()
 
   return (
     <div className='w-xs max-w-xs'>
@@ -30,24 +30,28 @@ export function LoginForm({ onSubmit, isLoading, apiError }: LoginFormProps) {
 
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 my-5'>
         <div>
-          <label htmlFor='username' className='text-xs font-medium block mb-1'>
-            Nombre
+          <label htmlFor='email' className='text-xs font-medium block mb-1'>
+            Correo Electrónico
           </label>
           <div className='inputDiv flex items-center gap-1.5'>
             <FaUser className='icon h-5 w-5 text-gray-600 flex-shrink-0' />
             <input
-              id='username'
-              type='text'
-              {...register('username', {
+              id='email'
+              type='email'
+              {...register('email', {
                 required: 'Este campo es requerido',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Ingresa un correo electrónico válido',
+                },
               })}
-              placeholder='Ingresa un nombre de usuario'
-              className='inputusername w-full p-2 border rounded text-sm'
+              placeholder='Ingresa tu correo electrónico'
+              className='inputemail w-full p-2 border rounded text-sm'
             />
           </div>
-          {errors.username && (
+          {errors.email && (
             <span className='text-red-500 text-xs block mt-1'>
-              {errors.username.message}
+              {errors.email.message}
             </span>
           )}
         </div>
