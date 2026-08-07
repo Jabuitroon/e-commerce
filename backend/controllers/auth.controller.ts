@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { JwtRequest, Role } from '../types/user'
 import { loginSchema } from '../DTOs/auth.dto'
-import { login } from '../services/auth.service'
+import { AuthError, login } from '../services/auth.service'
 
 export const loginUser = async (
   req: Request,
@@ -21,8 +21,8 @@ export const loginUser = async (
     const result = await login(req.body)
     return res.status(200).json(result)
   } catch (error) {
-    if (error) {
-      return res.status(500).json({ message: `${error}` })
+    if (error instanceof AuthError) {
+      return res.status(error.statusCode).json({ message: error.message })
     }
     return res.status(500).json({ message: 'Error interno del servidor' })
   }

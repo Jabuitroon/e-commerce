@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { UserDAO } from '../DAO/UserDao'
+import { AuthError } from '../services/auth.service'
 
 const userDao = new UserDAO()
 
@@ -16,10 +17,10 @@ export const getProfile = async (
 
     const profile = await userDao.findById(userId)
     return res.status(200).json(profile)
-  } catch (error: any) {
-    const statusCode = error.statusCode || 500
-    return res.status(statusCode).json({
-      error: error.message || 'Error interno del servidor',
-    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return res.status(error.statusCode).json({ message: error.message })
+    }
+    return res.status(500).json({ message: 'Error interno del servidor' })
   }
 }

@@ -12,7 +12,7 @@ export const authentication = (
   try {
     const authHeader = req.headers.authorization
     if (!authHeader) {
-      res.status(401).json('No authorization header found')
+      res.status(400).json({ error: 'No authorization header found' })
       return
     }
 
