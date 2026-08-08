@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
-
 import { OrdersDAO } from '../DAO/OrdersDAO'
+import { OrdersFilterDTO, OrdersExportFilterDTO  } from '../DTOs/orders.dto'
+import { ordersToCSV } from '../utils/csv'
 
 import {
   isValidAdminTransition,
   getValidAdminNextStatuses,
 } from '../services/orderStatusMachine'
-import { OrdersFilterDTO } from '../DTOs/orders.dto'
-import { OrderStatus } from 'backend/types/order'
+import { OrderStatus } from '../types/order'
 
 const orderDao = new OrdersDAO()
 
@@ -18,15 +18,29 @@ export const getOrders = async (
 ): Promise<void> => {
   try {
     const filterData = OrdersFilterDTO.parse(req.query)
-    const result = await orderDao.getAll({
-      page: filterData.page,
-      limit: filterData.limit,
-      status: filterData.status,
-      customerId: filterData.customerId,
-      from: filterData.from,
-      to: filterData.to,
-    })
+    const result = await orderDao.getAll(filterData)
     res.status(200).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const exportOrdersCSV = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const filterData = OrdersExportFilterDTO.parse(req.query)
+    const orders = await orderDao.getAllForExport(filterData)
+    const csv = ordersToCSV(orders)
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="orders_${Date.now()}.csv"`,
+    )
+    res.status(200).send(csv)
   } catch (err) {
     next(err)
   }

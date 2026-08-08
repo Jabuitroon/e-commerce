@@ -329,7 +329,7 @@ export default function Home() {
           </div>
         )}
         {isCartOpen && (
-          <div className='absolute right-0 shadow-lg z-50 transition-all duration-300 ease-in-out'>
+          <div className='right-0 fixed top-16 shadow-lg z-50 transition-all duration-300 ease-in-out'>
             <Cart onCloseCart={toggleCart} />
           </div>
         )}

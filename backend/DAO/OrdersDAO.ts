@@ -14,6 +14,17 @@ import {
   getValidNextStatuses,
 } from '../services/orderStatusMachine'
 
+const DEFAULT_PAGE_SIZE = 20
+const MAX_EXPORT_ROWS = 10000
+const SORT_COLUMN_MAP: Record<string, string> = {
+  customer_name: 'u.usu_nombre',
+  customer_email: 'u.usu_email',
+  ord_total: 'o.ord_total',
+  ord_expira_en: 'o.ord_expira_en',
+  ord_created_at: 'o.ord_created_at',
+  ord_estado: 'o.ord_estado',
+}
+
 export class OrderNotFoundError extends Error {
   constructor(orderId: number) {
     super(`Orden ${orderId} no encontrada`)
@@ -32,8 +43,6 @@ export class InvalidTransitionError extends Error {
   }
 }
 
-const DEFAULT_PAGE_SIZE = 20
-
 export interface UpdateOrderStatusParams {
   orderId: number
   newStatus: OrderStatus
@@ -51,18 +60,10 @@ const REASON_COLUMN_BY_STATUS: Record<string, string> = {
 
 // Listado paginado de órdenes con filtros opcionales.
 export class OrdersDAO implements IOrdersDAO {
-  async getAll(params: ListOrdersParams = {}): Promise<PaginatedOrders> {
-    const {
-      page = 1,
-      limit = DEFAULT_PAGE_SIZE,
-      status,
-      customerId,
-      from,
-      to,
-    } = params
-
-    const where = []
-    const values = []
+  private buildWhere(params: ListOrdersParams) {
+    const { status, customerId, from, to, search } = params
+    const where: string[] = []
+    const values: unknown[] = []
 
     if (status) {
       where.push('o.ord_estado = ?')
@@ -78,19 +79,42 @@ export class OrdersDAO implements IOrdersDAO {
     }
     if (to) {
       where.push('o.ord_created_at <= ?')
-      values.push(to)
+      values.push(`${to} 23:59:59`)
+    }
+    if (search) {
+      where.push('(u.usu_nombre LIKE ? OR u.usu_email LIKE ?)')
+      values.push(`%${search}%`, `%${search}%`)
     }
 
-    const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : ''
+    return {
+      whereClause: where.length ? `WHERE ${where.join(' AND ')}` : '',
+      values,
+    }
+  }
+
+  async getAll(params: ListOrdersParams = {}): Promise<PaginatedOrders> {
+    const {
+      page = 1,
+      limit = DEFAULT_PAGE_SIZE,
+      sortBy = 'ord_created_at',
+      sortDir = 'desc',
+    } = params
+
+    const { whereClause, values } = this.buildWhere(params)
     const offset = (Math.max(page, 1) - 1) * limit
-    const SQL_QUERY = `SELECT o.ord_id, o.ord_id_usuario, u.usu_nombre AS customer_name,
+    const sortColumn = SORT_COLUMN_MAP[sortBy] ?? 'o.ord_created_at'
+    const sortDirection = sortDir === 'asc' ? 'ASC' : 'DESC'
+
+    const SQL_QUERY = `SELECT o.ord_id, o.ord_id_usuario,
+            u.usu_nombre AS customer_name, u.usu_email AS customer_email,
             o.ord_subtotal, o.ord_costo_envio, o.ord_descuento, o.ord_total,
-            o.ord_estado, o.ord_created_at
+            o.ord_estado, o.ord_expira_en, o.ord_created_at
      FROM tbl_orden o
      JOIN tbl_usuario u ON u.usu_id = o.ord_id_usuario
      ${whereClause}
-     ORDER BY o.ord_created_at DESC
+     ORDER BY ${sortColumn} ${sortDirection}
      LIMIT ? OFFSET ?`
+
     const [rows] = await pool.query<OrderRow[]>(SQL_QUERY, [
       ...values,
       limit,
@@ -98,11 +122,36 @@ export class OrdersDAO implements IOrdersDAO {
     ])
 
     const [countRows] = await pool.query<CountRow[]>(
-      `SELECT COUNT(*) AS total FROM tbl_orden o ${whereClause}`,
+      `SELECT COUNT(*) AS total
+       FROM tbl_orden o
+       JOIN tbl_usuario u ON u.usu_id = o.ord_id_usuario
+       ${whereClause}`,
       values,
     )
 
     return { data: rows, page, limit, total: countRows[0].total }
+  }
+
+  // Reutiliza el mismo WHERE/ORDER, sin paginación (tope de seguridad).
+  async getAllForExport(params: ListOrdersParams = {}): Promise<Order[]> {
+    const { sortBy = 'ord_created_at', sortDir = 'desc' } = params
+    const { whereClause, values } = this.buildWhere(params)
+    const sortColumn = SORT_COLUMN_MAP[sortBy] ?? 'o.ord_created_at'
+    const sortDirection = sortDir === 'asc' ? 'ASC' : 'DESC'
+
+    const [rows] = await pool.query<OrderRow[]>(
+      `SELECT o.ord_id, o.ord_id_usuario,
+              u.usu_nombre AS customer_name, u.usu_email AS customer_email,
+              o.ord_subtotal, o.ord_costo_envio, o.ord_descuento, o.ord_total,
+              o.ord_estado, o.ord_expira_en, o.ord_created_at
+       FROM tbl_orden o
+       JOIN tbl_usuario u ON u.usu_id = o.ord_id_usuario
+       ${whereClause}
+       ORDER BY ${sortColumn} ${sortDirection}
+       LIMIT ?`,
+      [...values, MAX_EXPORT_ROWS],
+    )
+    return rows
   }
 
   async findById(orderId: string): Promise<Order | null> {

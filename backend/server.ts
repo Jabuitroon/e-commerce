@@ -29,7 +29,7 @@ app.set('trust proxy', 1)
 
 app.use(cors())
 app.use(productsRoutes)
-app.use('/api/admin', orderRoutes)
+app.use('/api', orderRoutes)
 app.use('/api', checkoutRoutes)
 app.use('/api', userRoutes)
 app.use('/api', authRoutes)

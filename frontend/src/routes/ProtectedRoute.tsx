@@ -19,7 +19,11 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
   // Espera a que Zustand termine de leer localStorage antes de decidir nada
   if (!hasHydrated) {
-    return <div>Cargando...</div>
+    return (
+      <div className='flex h-screen items-center justify-center text-gray-400'>
+        Loading...
+      </div>
+    )
   }
 
   if (!isAuthenticated || !profile) {
