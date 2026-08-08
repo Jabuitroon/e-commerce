@@ -1,14 +1,22 @@
-import React, { useState } from 'react'
-
-import { ShoppingCart, User, MapPin, ChevronDown, X } from 'lucide-react'
-import { Search } from '../components/Search'
+import { useState } from 'react'
+import { SearchProduct } from '../components/Search'
 import { Cart } from '../components/Cart'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/auth.store'
+import {
+  User,
+  ChevronDown,
+  Settings,
+  Info,
+  LogOut,
+  X,
+  MapPin,
+  ShoppingCart,
+} from 'lucide-react'
 
 export default function Home() {
-  const isAuth = useAuthStore((s) => !!s.token && !!s.profile)
-  const showProfile = isAuth ? 'profile' : 'login'
+  const { profile, logout } = useAuthStore()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
@@ -79,9 +87,9 @@ export default function Home() {
 
   return (
     <>
-      <header className='bg-[#e7ecef] w-full fixed z-50 md:h-16'>
+      <header className='bg-[#e7ecef] w-full fixed z-50 md:h-16 flex justify-center items-center'>
         <div className='container mx-auto px-4'>
-          <div className='flex items-center justify-between py-3'>
+          <div className='flex items-center justify-between'>
             {/* Logo y Menú */}
             <div className='flex items-center gap-4'>
               <div className='text-2xl font-bold'>
@@ -114,7 +122,7 @@ export default function Home() {
 
             {/* Barra de búsqueda */}
             <div className='relative flex-1 max-w-xl mx-4'>
-              <Search />
+              <SearchProduct />
             </div>
 
             {/* Opciones de usuario */}
@@ -128,15 +136,6 @@ export default function Home() {
                 </div>
                 <ChevronDown className='h-4 w-4' />
               </div>
-
-              {/* Mi cuenta */}
-              <Button size='sm' variant='ghost' className='loginbtn relative'>
-                <Link to={showProfile}>
-                  <User className='h-6 w-6' />
-                  <span className='sr-only'>Mi cuenta</span>
-                </Link>
-              </Button>
-
               {/* Carrito */}
               <Button
                 onClick={toggleCart}
@@ -153,6 +152,94 @@ export default function Home() {
                   }`}
                 />
               </Button>
+              {/* Mi cuenta */}
+              {profile?.id_usuario ? (
+                /* Estado: Usuario Autenticado */
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className='flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none'
+                  aria-expanded={isProfileOpen}
+                  aria-haspopup='true'
+                >
+                  <div className='w-9 h-9 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-bold text-slate-700 shadow-sm border border-slate-200'>
+                    {profile.nombre?.charAt(0).toUpperCase()}
+                  </div>
+                  <span className='font-medium text-slate-800 text-sm hidden md:inline'>
+                    {profile.nombre}
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
+                      isProfileOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+              ) : (
+                /* Estado: Usuario no Autenticado */
+                <Button size='sm' variant='ghost' className='loginbtn relative'>
+                  <Link to='/login' className='flex items-center gap-1'>
+                    <User className='h-6 w-6' />
+                    <span className='sr-only'>Mi cuenta</span>
+                  </Link>
+                </Button>
+              )}
+
+              {/* Dropdown Menu */}
+              {isProfileOpen && profile && (
+                <div className='absolute right-0 top-14 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50 transform opacity-100 scale-100 transition-all'>
+                  {/* Encabezado del Perfil */}
+                  <div className='pb-3 mb-2'>
+                    <p className='font-semibold text-slate-900 text-base leading-tight truncate'>
+                      {profile.nombre}
+                    </p>
+                    <p className='text-sm text-slate-400 font-normal truncate mt-0.5'>
+                      {profile.email}
+                    </p>
+                  </div>
+
+                  {/* Opciones del Menú */}
+                  <div className='space-y-1 text-slate-700 text-sm font-medium'>
+                    <Link
+                      to='/profile'
+                      onClick={() => setIsProfileOpen(false)}
+                      className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-200/80 transition-colors text-slate-800'
+                    >
+                      <User className='h-5 w-5 text-slate-600' />
+                      <span>Edit profile</span>
+                    </Link>
+
+                    <Link
+                      to='/settings'
+                      onClick={() => setIsProfileOpen(false)}
+                      className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors'
+                    >
+                      <Settings className='h-5 w-5 text-slate-500' />
+                      <span>Account settings</span>
+                    </Link>
+
+                    <Link
+                      to='/support'
+                      onClick={() => setIsProfileOpen(false)}
+                      className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors'
+                    >
+                      <Info className='h-5 w-5 text-slate-500' />
+                      <span>Support</span>
+                    </Link>
+
+                    <hr className='my-2 border-gray-100' />
+
+                    <button
+                      onClick={() => {
+                        setIsProfileOpen(false)
+                        logout()
+                      }}
+                      className='w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer'
+                    >
+                      <LogOut className='h-5 w-5 text-slate-500 hover:text-red-600' />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

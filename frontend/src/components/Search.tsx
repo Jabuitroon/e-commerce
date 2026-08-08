@@ -3,7 +3,7 @@ import { Search as SearchIcon } from 'lucide-react'
 import { ProductsContext } from '../context/filters'
 import { useDebounce } from '@uidotdev/usehooks'
 import { useContext, useEffect, useState } from 'react'
-import { Product } from '../../../types/types/src/types'
+import { Product } from '../../src/interfaces/interfaces'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
@@ -42,7 +42,7 @@ const Button: React.FC<ButtonProps> = ({
   )
 }
 
-export const Search = () => {
+export const SearchProduct = () => {
   const context = useContext(ProductsContext)
 
   if (!context) {
@@ -50,7 +50,7 @@ export const Search = () => {
   }
   const { initData, setProducts } = context
 
-  const [search, setSearch] = useState<String>(() => {
+  const [search, setSearch] = useState(() => {
     const searchParams = new URLSearchParams(window.location.search)
     return searchParams.get('q') ?? ''
   })
@@ -84,10 +84,10 @@ export const Search = () => {
     const toSearch = search.toString().toLowerCase()
     console.log(toSearch)
 
-    let filterFromData = initData.filter((product: Product) =>
+    const filterFromData = initData.filter((product: Product) =>
       Object.values(product).some((value) =>
-        String(value).toLowerCase().includes(toSearch)
-      )
+        String(value).toLowerCase().includes(toSearch),
+      ),
     )
     setProducts(filterFromData.length > 0 ? filterFromData : initData)
     return

@@ -8,8 +8,8 @@ export type StateToken = {
   profile: string
 }
 
+// Funciones que actualizan estado
 export type Actions = {
-  // Funciones que actualizan estado
   setToken: (token: string) => void
   setProfile: (profile: string) => void
   setIsAuth: (isAuth: boolean) => void
