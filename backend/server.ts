@@ -28,11 +28,11 @@ const port = process.env.PORTT ?? 3000
 app.set('trust proxy', 1)
 
 app.use(cors())
+app.use('/api', authRoutes)
 app.use(productsRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', checkoutRoutes)
 app.use('/api', userRoutes)
-app.use('/api', authRoutes)
 app.use(aiRouter)
 
 // Corre cada minuto: cancela órdenes pendientes vencidas y libera su stock.

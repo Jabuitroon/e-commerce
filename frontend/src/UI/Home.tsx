@@ -12,49 +12,53 @@ import {
   X,
   MapPin,
   ShoppingCart,
+  LayoutDashboard,
 } from 'lucide-react'
+import { useIsAdmin } from '../utils/permissions'
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode
+  className?: string
+  variant?: 'default' | 'outline' | 'ghost' | 'danger'
+  size?: 'default' | 'sm'
+}
+
+const Button: React.FC<ButtonProps> = ({
+  children,
+  className = '',
+  variant = 'default',
+  size = 'default',
+  ...props
+}) => {
+  const baseStyles =
+    'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+
+  const variants: Record<string, string> = {
+    default: 'bg-blue-500 text-white hover:bg-blue-600',
+    outline: 'border border-gray-200 bg-transparent hover:bg-gray-100',
+    ghost: 'hover:bg-gray-100',
+  }
+
+  const sizes: Record<string, string> = {
+    default: 'h-10 py-2 px-4',
+    sm: 'h-9 px-3 rounded-md text-sm',
+  }
+
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
 
 export default function Home() {
   const { profile, logout } = useAuthStore()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
-  interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    children: React.ReactNode
-    className?: string
-    variant?: 'default' | 'outline' | 'ghost' | 'danger'
-    size?: 'default' | 'sm'
-  }
-
-  const Button: React.FC<ButtonProps> = ({
-    children,
-    className = '',
-    variant = 'default',
-    size = 'default',
-    ...props
-  }) => {
-    const baseStyles =
-      'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
-
-    const variants: Record<string, string> = {
-      default: 'bg-blue-500 text-white hover:bg-blue-600',
-      outline: 'border border-gray-200 bg-transparent hover:bg-gray-100',
-      ghost: 'hover:bg-gray-100',
-    }
-
-    const sizes: Record<string, string> = {
-      default: 'h-10 py-2 px-4',
-      sm: 'h-9 px-3 rounded-md text-sm',
-    }
-
-    return (
-      <button
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-        {...props}
-      >
-        {children}
-      </button>
-    )
-  }
+  const isAdmin = useIsAdmin()
 
   // Para los inputs radio
   const nameCategory = ['prime', 'home', 'sale', 'alternative', 'todo']
@@ -87,7 +91,7 @@ export default function Home() {
 
   return (
     <>
-      <header className='bg-[#e7ecef] w-full fixed z-50 md:h-16 flex justify-center items-center'>
+      <header className='bg-[#e7ecef] w-full md:h-16 flex justify-center items-center'>
         <div className='container mx-auto px-4'>
           <div className='flex items-center justify-between'>
             {/* Logo y Menú */}
@@ -198,6 +202,15 @@ export default function Home() {
 
                   {/* Opciones del Menú */}
                   <div className='space-y-1 text-slate-700 text-sm font-medium'>
+                    {isAdmin && (
+                      <Link
+                        to='/admin'
+                        className='flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-200/80 transition-colors text-slate-800'
+                      >
+                        <LayoutDashboard className='h-5 w-5 text-slate-600' />
+                        Dashboard
+                      </Link>
+                    )}
                     <Link
                       to='/profile'
                       onClick={() => setIsProfileOpen(false)}

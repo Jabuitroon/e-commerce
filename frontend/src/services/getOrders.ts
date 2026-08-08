@@ -16,10 +16,13 @@ function buildQueryString(params: Record<string, any>): string {
 
 export async function fetchOrders(
   params: OrdersQueryParams,
+  token: string | null,
 ): Promise<PaginatedOrders> {
   const query = buildQueryString(params)
 
-  const response = await fetch(`${BASE_URL}/orders?${query}`)
+  const response = await fetch(`${BASE_URL}/orders?${query}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
 
   if (!response.ok) {
     throw new Error(`Error en la petición: ${response.statusText}`)

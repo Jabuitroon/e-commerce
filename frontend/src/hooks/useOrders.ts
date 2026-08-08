@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchOrders } from '../services/getOrders'
 import { Order, SortColumn, SortDirection } from '../interfaces/order'
 import { DateRangePreset, resolveDateRange } from '../utils/dateRange'
+import { useAuthStore } from '../../store/auth.store'
 
 const PAGE_SIZE = 10
 
@@ -16,6 +17,7 @@ export function useOrders() {
   const [sortDir, setSortDir] = useState<SortDirection>('desc')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const token = useAuthStore((state) => state.token)
 
   // Debounce de búsqueda (300ms)
   useEffect(() => {
@@ -33,7 +35,18 @@ export function useOrders() {
     setIsLoading(true)
     setError(null)
 
-    fetchOrders({ page, limit: PAGE_SIZE, search: search || undefined, from, to, sortBy, sortDir })
+    fetchOrders(
+      {
+        page,
+        limit: PAGE_SIZE,
+        search: search || undefined,
+        from,
+        to,
+        sortBy,
+        sortDir,
+      },
+      token,
+    )
       .then((result) => {
         if (cancelled) return
         setOrders(result.data)
@@ -49,7 +62,7 @@ export function useOrders() {
     return () => {
       cancelled = true
     }
-  }, [page, search, from, to, sortBy, sortDir])
+  }, [token, page, search, from, to, sortBy, sortDir])
 
   const toggleSort = (column: SortColumn) => {
     if (sortBy === column) {
@@ -61,11 +74,20 @@ export function useOrders() {
   }
 
   return {
-    orders, total, page, setPage, PAGE_SIZE,
-    searchInput, setSearchInput,
-    datePreset, setDatePreset,
-    sortBy, sortDir, toggleSort,
-    isLoading, error,
+    orders,
+    total,
+    page,
+    setPage,
+    PAGE_SIZE,
+    searchInput,
+    setSearchInput,
+    datePreset,
+    setDatePreset,
+    sortBy,
+    sortDir,
+    toggleSort,
+    isLoading,
+    error,
     exportParams: { search: search || undefined, from, to, sortBy, sortDir },
   }
 }

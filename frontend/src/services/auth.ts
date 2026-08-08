@@ -1,13 +1,16 @@
 import { userDataLogin } from '../types'
 import { Perfil } from '../../store/auth.store'
+const BASE_URL = import.meta.env.VITE_API_URL
 
 interface LoginResponse {
   token?: string
   msg?: string
 }
 
-export const loginService = async (credentials: userDataLogin): Promise<string> => {
-  const response = await fetch('http://localhost:3000/api/login', {
+export const loginService = async (
+  credentials: userDataLogin,
+): Promise<string> => {
+  const response = await fetch(`${BASE_URL}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -23,7 +26,7 @@ export const loginService = async (credentials: userDataLogin): Promise<string> 
 }
 
 export const getProfileService = async (token: string): Promise<Perfil> => {
-  const response = await fetch('http://localhost:3000/api/profile', {
+  const response = await fetch(`${BASE_URL}/profile`, {
     headers: { Authorization: `Bearer ${token}` },
   })
 
