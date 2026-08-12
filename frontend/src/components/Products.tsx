@@ -103,17 +103,18 @@ export const Products = () => {
 
   return (
     <>
-      <div className='container w-5xl mx-auto px-4 md:pt-24 flex flex-col gap-8'>
+      <div className='container w-5xl mx-auto px-4 md:pt-4 flex flex-col gap-8'>
         <h1 className='text-3xl font-bold text-center md:text-left'>
           Descubre Nuestros Productos
         </h1>
-        <div>
-          {/* Ubicar el chat */}
+        {/*<div>
+           Ubicar el chat 
           <Chat />
         </div>
+          */}
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
           {products?.map((objProduct) =>
-            objProduct.pro_is_best_seller ? (
+            objProduct.pro_id == "B0XYZ5678" ? (
               <div
                 className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl'
                 key={objProduct.pro_id}
@@ -219,9 +220,7 @@ export const Products = () => {
                         variant='ghost'
                         className='h-10 w-10 p-0'
                         onClick={() => {
-                          isAllow
-                            ? addToCart(objProduct)
-                            : navigateTo('login')
+                          isAllow ? addToCart(objProduct) : navigateTo('login')
                         }}
                       >
                         <FaShoppingCart className='h-6 w-6' />

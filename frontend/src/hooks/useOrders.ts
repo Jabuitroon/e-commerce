@@ -12,7 +12,7 @@ export function useOrders() {
   const [page, setPage] = useState(1)
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('7d')
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('all')
   const [sortBy, setSortBy] = useState<SortColumn>('ord_created_at')
   const [sortDir, setSortDir] = useState<SortDirection>('desc')
   const [isLoading, setIsLoading] = useState(false)

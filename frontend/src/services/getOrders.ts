@@ -43,12 +43,15 @@ export async function fetchOrderById(orderId: string): Promise<Order> {
 
 export async function exportOrdersCSV(
   params: Omit<OrdersQueryParams, 'page' | 'limit'>,
+  token: string | null,
 ): Promise<void> {
   const queryParams = new URLSearchParams(
     params as Record<string, string>,
   ).toString()
 
-  const response = await fetch(`${BASE_URL}/admin/orders/export?${queryParams}`)
+  const response = await fetch(`${BASE_URL}/orders/export?${queryParams}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
 
   if (!response.ok) {
     throw new Error(`Error al exportar CSV: ${response.statusText}`)

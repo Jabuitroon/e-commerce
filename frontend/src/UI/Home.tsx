@@ -160,6 +160,8 @@ export default function Home() {
               {profile?.id_usuario ? (
                 /* Estado: Usuario Autenticado */
                 <button
+                  // Para testing con crypress
+                  data-cy='user-dropdown-trigger'
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className='flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none'
                   aria-expanded={isProfileOpen}
@@ -201,7 +203,7 @@ export default function Home() {
                   </div>
 
                   {/* Opciones del Menú */}
-                  <div className='space-y-1 text-slate-700 text-sm font-medium'>
+                  <div data-cy="user-dropdown-menu" className='space-y-1 text-slate-700 text-sm font-medium'>
                     {isAdmin && (
                       <Link
                         to='/admin'
