@@ -1,93 +1,20 @@
 import { useContext } from 'react'
-import { ProductsContext } from '../context/filters'
-import { useCart } from '../hooks/custHooks'
-
-import type React from 'react'
-// Importamos los iconos necesarios de react-icons
-import {
-  FaStar,
-  FaShoppingCart,
-  FaHeart,
-  FaSortAmountUpAlt,
-} from 'react-icons/fa'
-
-import { useAuthStore } from '../../store/auth.store'
 import { useNavigate } from 'react-router-dom'
-import { Chat } from './Chat'
+import { useCart } from '../hooks/custHooks'
+import { ProductsContext } from '../context/filters'
+import { useAuthStore } from '../../store/auth.store'
+import { FaStar, FaHeart, FaRegHeart } from 'react-icons/fa'
 
-// Definimos interfaces para los props de nuestros componentes
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  children: React.ReactNode
-  className?: string
-}
+import { Badge } from '../UI/Badge'
+import { Button } from '../UI/Button'
+import { PuddleCartButton } from './PuddleCartButton'
+// import { Chat } from './Chat'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode
-  className?: string
-  variant?: 'default' | 'outline' | 'ghost' | 'danger' | 'light' | 'alternative'
-  size?: 'default' | 'sm'
-}
-
-// Definimos la interfaz para una categoría
-interface Category {
-  id: number
-  name: string
-  image: string
-}
-
-// Componente Badge con TypeScript
-const Badge: React.FC<BadgeProps> = ({
-  children,
-  className = '',
-  ...props
-}) => {
-  return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}
-      {...props}
-    >
-      {children}
-    </span>
-  )
-}
-
-// Componente Button con TypeScript
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  className = '',
-  variant = 'default',
-  size = 'default',
-  ...props
-}) => {
-  const baseStyles =
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
-
-  const variants: Record<string, string> = {
-    default: 'bg-blue-500 text-white hover:bg-blue-600',
-    outline: 'border border-gray-200 bg-transparent hover:bg-gray-100',
-    ghost: 'hover:bg-gray-100',
-    danger:
-      'text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900',
-    light:
-      'text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700',
-    alternative:
-      'py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700',
-  }
-
-  const sizes: Record<string, string> = {
-    default: 'h-10 py-2 px-4',
-    sm: 'h-9 px-3 rounded-md text-sm',
-  }
-
-  return (
-    <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
+// interface Category {
+//   id: number
+//   name: string
+//   image: string
+// }
 
 export const Products = () => {
   const context = useContext(ProductsContext)
@@ -96,10 +23,17 @@ export const Products = () => {
     throw new Error('ProductsContext debe usarse dentro de un ProductsProvider')
   }
   const { products } = context
-  const { addToCart } = useCart()
+  const { cart, addToCart } = useCart()
 
   const isAllow = useAuthStore((s) => !!s.token && !!s.profile)
   const navigateTo = useNavigate()
+
+  const getProductQuantity = (productId: string) => {
+    const item = cart.find(
+      (item) => item.pro_id === productId || item.pro_id === productId,
+    )
+    return item ? Number(item.count) : 0
+  }
 
   return (
     <>
@@ -113,8 +47,9 @@ export const Products = () => {
         </div>
           */}
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
-          {products?.map((objProduct) =>
-            objProduct.pro_id == "B0XYZ5678" ? (
+          {products?.map((objProduct) => {
+            const quantity = getProductQuantity(objProduct.pro_id)
+            return objProduct.pro_id == 'B0XYZ5678' ? (
               <div
                 className='md:col-span-4 md:row-span-4 group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl'
                 key={objProduct.pro_id}
@@ -134,7 +69,19 @@ export const Products = () => {
                   />
                   <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end'>
                     <div className='p-4 text-white'>
-                      <Button className='w-full mb-2'>Añadir al carrito</Button>
+                      <Button
+                        className='w-full mb-2'
+                        onClick={() =>
+                          isAllow ? addToCart(objProduct) : navigateTo('login')
+                        }
+                      >
+                        Añadir al carrito
+                        {quantity > 0 && (
+                          <span className='ml-2 bg-white text-blue-600 font-bold px-2 py-0.5 rounded-full text-xs'>
+                            {quantity}
+                          </span>
+                        )}
+                      </Button>
                       <div className='flex justify-between'>
                         <Button
                           size='sm'
@@ -214,30 +161,30 @@ export const Products = () => {
                       {objProduct.pro_price_symbol}
                       {objProduct.pro_price}
                     </span>
-                    <div className='flex'>
+                    <div className='flex items-center gap-2'>
+                      <PuddleCartButton
+                        objProduct={objProduct}
+                        quantity={quantity}
+                        addToCart={addToCart}
+                        navigateTo={navigateTo}
+                        isAllow={isAllow}
+                      />
+
                       <Button
                         size='sm'
                         variant='ghost'
-                        className='h-10 w-10 p-0'
-                        onClick={() => {
-                          isAllow ? addToCart(objProduct) : navigateTo('login')
-                        }}
+                        className='h-10 w-10 flex items-center gap-4'
                       >
-                        <FaShoppingCart className='h-6 w-6' />
-                      </Button>
-                      <Button
-                        size='sm'
-                        variant='ghost'
-                        className='h-10 w-10 p-0'
-                      >
-                        <FaSortAmountUpAlt />
+                        <div className='flex items-center gap-4'>
+                          <FaRegHeart className='text-2xl' />
+                        </div>
                       </Button>
                     </div>
                   </div>
                 </div>
               </div>
-            ),
-          )}
+            )
+          })}
         </div>
       </div>
     </>
