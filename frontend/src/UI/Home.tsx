@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useCart } from '../hooks/custHooks'
+import { useAuthStore } from '../../store/auth.store'
 import { SearchProduct } from '../components/Search'
 import { Cart } from '../components/Cart'
-import { Link } from 'react-router-dom'
-import { useAuthStore } from '../../store/auth.store'
+import { useIsAdmin } from '../utils/permissions'
 import {
   User,
   ChevronDown,
@@ -14,84 +16,31 @@ import {
   ShoppingCart,
   LayoutDashboard,
 } from 'lucide-react'
-import { useIsAdmin } from '../utils/permissions'
+import { Button } from './Button'
+import { HeaderMenu } from '../components/HeaderMenu'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode
-  className?: string
-  variant?: 'default' | 'outline' | 'ghost' | 'danger'
-  size?: 'default' | 'sm'
-}
-
-const Button: React.FC<ButtonProps> = ({
-  children,
-  className = '',
-  variant = 'default',
-  size = 'default',
-  ...props
-}) => {
-  const baseStyles =
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
-
-  const variants: Record<string, string> = {
-    default: 'bg-blue-500 text-white hover:bg-blue-600',
-    outline: 'border border-gray-200 bg-transparent hover:bg-gray-100',
-    ghost: 'hover:bg-gray-100',
-  }
-
-  const sizes: Record<string, string> = {
-    default: 'h-10 py-2 px-4',
-    sm: 'h-9 px-3 rounded-md text-sm',
-  }
-
-  return (
-    <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
-
-export default function Home() {
+export default function HeaderHome() {
   const { profile, logout } = useAuthStore()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   const isAdmin = useIsAdmin()
-
-  // Para los inputs radio
-  const nameCategory = ['prime', 'home', 'sale', 'alternative', 'todo']
-
-  const convertCat: {
-    value: string
-    label: string
-  }[] = nameCategory.map((name) => ({
-    value: name,
-    label: name,
-  }))
-
-  const [value, setValue] = useState<string | null>(null)
-  const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
-    e.preventDefault()
-    console.log(value)
-  }
+  const { cart } = useCart()
 
   // Controladores de mini menús
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isCartOpen, setIsCaertOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   const toggleCart = () => {
-    setIsCaertOpen(!isCartOpen)
+    setIsCartOpen(!isCartOpen)
   }
 
   return (
     <>
-      <header className='bg-[#e7ecef] w-full md:h-16 flex justify-center items-center'>
+      <header className='bg-[#e7ecef] w-full md:h-16 flex justify-center items-center fixed top-0 z-50'>
         <div className='container mx-auto px-4'>
           <div className='flex items-center justify-between'>
             {/* Logo y Menú */}
@@ -155,6 +104,11 @@ export default function Home() {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 />
+                {cart.length > 0 && (
+                  <span className='absolute bg-white text-blue-600 h-5 w-5 font-bold rounded-full text-[14px] right-0 top-0'>
+                    {cart.length}
+                  </span>
+                )}
               </Button>
               {/* Mi cuenta */}
               {profile?.id_usuario ? (
@@ -184,7 +138,6 @@ export default function Home() {
                 <Button size='sm' variant='ghost' className='loginbtn relative'>
                   <Link to='/login' className='flex items-center gap-1'>
                     <User className='h-6 w-6' />
-                    <span className='sr-only'>Mi cuenta</span>
                   </Link>
                 </Button>
               )}
@@ -203,7 +156,10 @@ export default function Home() {
                   </div>
 
                   {/* Opciones del Menú */}
-                  <div data-cy="user-dropdown-menu" className='space-y-1 text-slate-700 text-sm font-medium'>
+                  <div
+                    data-cy='user-dropdown-menu'
+                    className='space-y-1 text-slate-700 text-sm font-medium'
+                  >
                     {isAdmin && (
                       <Link
                         to='/admin'
@@ -258,96 +214,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {isMenuOpen && (
-          <div className='absolute top-full left-0 w-full bg-white shadow-lg z-50 transition-all duration-300 ease-in-out'>
-            <div className='container mx-auto px-4 py-4'>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                <div className='flex flex-col space-y-2 items-start'>
-                  <h3 className='font-bold text-lg mb-3'>Categorías</h3>
-                  <form className='form' onSubmit={handleSubmit}>
-                    {convertCat.map((category) => (
-                      <div key={category.value}>
-                        <input
-                          type='radio'
-                          name='category'
-                          value={category.value}
-                          id={category.value}
-                          checked={value == category.value}
-                          onChange={(e) => setValue(e.target.value)}
-                        />
-                        <label htmlFor={category.value}>
-                          <span className='hover:text-yellow-600 px-2 font-medium'>
-                            {category.label}
-                          </span>
-                        </label>
-                      </div>
-                    ))}
-                    <div>
-                      <Button variant='ghost' type='submit'>
-                        Aplicar
-                      </Button>
-                    </div>
-                  </form>
-                </div>
-                <div>
-                  <h3 className='font-bold text-lg mb-3'>Mi Cuenta</h3>
-                  <ul className='space-y-2'>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Mis pedidos
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Mis datos
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Mis direcciones
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Mis favoritos
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className='font-bold text-lg mb-3'>Ayuda</h3>
-                  <ul className='space-y-2'>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Preguntas frecuentes
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Términos y condiciones
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Política de privacidad
-                      </a>
-                    </li>
-                    <li>
-                      <a href='#' className='hover:text-yellow-600'>
-                        Contacto
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {isCartOpen && (
-          <div className='right-0 fixed top-16 shadow-lg z-50 transition-all duration-300 ease-in-out'>
-            <Cart onCloseCart={toggleCart} />
-          </div>
-        )}
+        {isMenuOpen && <HeaderMenu />}
         {/* Overlay para cerrar el menú al hacer clic fuera */}
         {isMenuOpen && (
           <div
@@ -355,6 +222,11 @@ export default function Home() {
             onClick={toggleMenu}
             aria-hidden='true'
           ></div>
+        )}
+        {isCartOpen && (
+          <div className='right-0 fixed top-16 shadow-lg z-50 transition-all duration-300 ease-in-out'>
+            <Cart onCloseCart={toggleCart} />
+          </div>
         )}
       </header>
     </>

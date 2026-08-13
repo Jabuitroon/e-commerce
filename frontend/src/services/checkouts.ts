@@ -9,7 +9,7 @@ export async function createCheckoutSession(
   items: CheckoutItemPayload[],
   token?: string | null
 ): Promise<{ clientSecret: string }> {
-  const response = await fetch(`${API_URL}/api/checkout`, {
+  const response = await fetch(`${API_URL}/checkout`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

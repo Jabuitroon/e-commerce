@@ -61,7 +61,7 @@ export function CartPage() {
   }
 
   return (
-    <div className='min-h-screen bg-white pt-18 py-10 px-4 sm:px-6 lg:px-8'>
+    <div className='min-h-screen bg-white pt-18 p-4 sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-6xl'>
         {/* Paso 1 Activo */}
         <div className='container mx-auto p-4'>

@@ -13,8 +13,8 @@ export const PuddleCartButton = ({
   const [isRippling, setIsRippling] = useState(false)
 
   const handleClick = () => {
-    // Activar la animación
-    setIsRippling(true)
+    // Activar la animación solo la primer vez
+    if (quantity == 0) setIsRippling(true)
 
     // Ejecutar la lógica de agregar al carrito (tu lógica original)
     if (isAllow) {
@@ -52,8 +52,17 @@ export const PuddleCartButton = ({
             {quantity}
           </span>
         ) : (
-          <div className='flex items-center gap-4'>
-            <FaShoppingCart className='text-2xl' />
+          <div
+            className='relative flex items-center justify-center'
+            title='Agregar producto al carrito'
+          >
+            {/* Icono del Carrito Principal */}
+            <FaShoppingCart className='text-2xl text-gray-700' />
+
+            {/* Icono + en la esquina superior derecha */}
+            <span className='absolute -top-1.5 -right-1.5 text-slate-600 rounded-full text-[16px] font-extrabold w-3 h-3 flex items-center justify-center leading-none shadow-sm'>
+              ++
+            </span>
           </div>
         )}
       </div>

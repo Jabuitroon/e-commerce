@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
-
 import { ProtectedRoute } from '../routes/ProtectedRoute'
 import { AdminLayout } from '../layouts/AdminLayout'
+import RootLayout from '../layouts/RootLayout'
 import { CartPage } from '../pages/CartPage'
 import { CheckoutPage } from '../pages/CheckoutPage'
 import { OrderConfirmationPage } from '../pages/OrderConfirmationPage'
@@ -30,9 +30,6 @@ function withSuspense(element: React.ReactNode) {
 
 const router = createBrowserRouter([
   { path: '/', element: <ProductPage /> },
-  { path: '/cart', element: <CartPage /> },
-  { path: '/checkout', element: <CheckoutPage /> },
-  { path: '/order-confirmation', element: <OrderConfirmationPage /> },
   { path: '/register', element: <Register /> },
   { path: '/login', element: <LoginPage /> },
 
@@ -50,6 +47,20 @@ const router = createBrowserRouter([
             path: 'orders/:id',
             element: withSuspense(<OrderDetailPage />),
           },
+        ],
+      },
+    ],
+  },
+  {
+    element: <ProtectedRoute allowedRoles={['administrador', 'cliente']} />,
+    children: [
+      {
+        path: '/',
+        element: <RootLayout />,
+        children: [
+          { path: '/cart', element: <CartPage /> },
+          { path: '/checkout', element: <CheckoutPage /> },
+          { path: '/order-confirmation', element: <OrderConfirmationPage /> },
         ],
       },
     ],

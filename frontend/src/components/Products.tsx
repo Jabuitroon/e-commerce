@@ -8,13 +8,6 @@ import { FaStar, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { Badge } from '../UI/Badge'
 import { Button } from '../UI/Button'
 import { PuddleCartButton } from './PuddleCartButton'
-// import { Chat } from './Chat'
-
-// interface Category {
-//   id: number
-//   name: string
-//   image: string
-// }
 
 export const Products = () => {
   const context = useContext(ProductsContext)
@@ -37,15 +30,10 @@ export const Products = () => {
 
   return (
     <>
-      <div className='container w-5xl mx-auto px-4 md:pt-4 flex flex-col gap-8'>
+      <div className='container w-5xl mx-auto px-4 md:pt-18 flex flex-col gap-6'>
         <h1 className='text-3xl font-bold text-center md:text-left'>
           Descubre Nuestros Productos
         </h1>
-        {/*<div>
-           Ubicar el chat 
-          <Chat />
-        </div>
-          */}
         <div className='grid grid-cols-1 md:grid-cols-6 md:grid-rows-6 gap-4 md:gap-6 mb-12'>
           {products?.map((objProduct) => {
             const quantity = getProductQuantity(objProduct.pro_id)
