@@ -88,11 +88,12 @@ https://github.com/user-attachments/assets/a0cbf724-11b3-41a9-9eb6-ef04f63844af
 
 https://github.com/user-attachments/assets/6cf174fb-d5aa-4db0-95f1-52f6fb17e480
 
-## Pruebas e2e con cypress para el administrador de órdenes y sus estados
+## Pruebas e2e con Cypress 
+### Panel de gestión de órdenes y sus estados
 
 https://github.com/user-attachments/assets/190886ad-a420-4ff1-9399-51adf806eac9
 
-## Demos de funcionalidades
+### Demos de funcionalidades
 - Vista inicial de productos, sin inicio de sesión
 
 - Iniciar sesión como admin e ingresar al panel de gestión de productos
