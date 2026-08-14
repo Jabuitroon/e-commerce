@@ -91,16 +91,20 @@ https://github.com/user-attachments/assets/a60dc2ce-201a-4f95-a4e3-71449f42f75c
 ### Demos con la sandbox de stripe para los métodos de pago
 ### Validación de métodos de pago
 - Campos vacíos
+
 https://github.com/user-attachments/assets/9af4d7a0-8b3c-48d9-8663-a38267b5a469
 
 - Tarjeta rechazada
+
 https://github.com/user-attachments/assets/f93c43c1-0756-4784-beba-5dbd2332fa0d
 
 - Error al procesar una tarjeta
+
 https://github.com/user-attachments/assets/e9156832-000b-4dd1-b90c-853f134dfe33
 
 ### Métodos de pago correctos
 - Autenticación y conexión con servicios externos
+
 https://github.com/user-attachments/assets/b021e883-2a5c-4355-bd1a-bf572f0f164d
 
 
