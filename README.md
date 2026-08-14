@@ -88,6 +88,10 @@ https://github.com/user-attachments/assets/a0cbf724-11b3-41a9-9eb6-ef04f63844af
 
 https://github.com/user-attachments/assets/6cf174fb-d5aa-4db0-95f1-52f6fb17e480
 
+## Implementación de un modelo de OpenIA para chatbot
+
+https://github.com/user-attachments/assets/77767ae7-5620-426f-b46b-2470ee044c0b
+
 ## Pruebas e2e con Cypress 
 ### Panel de gestión de órdenes y sus estados
 
