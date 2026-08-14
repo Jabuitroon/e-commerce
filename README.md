@@ -22,9 +22,8 @@ ecommerce/
 | ├── utils/
 │ ├── package.json
 │ ├── pnpm-lock.yaml
-│ ├── productos.json
 │ ├── server.ts
-│ └── tsconfig.json
+│ ├── tsconfig.json
 │
 ├── frontend/
 │ ├── public/
@@ -45,17 +44,10 @@ ecommerce/
 │ ├── UI/
 │ ├── utils/
 │ ├── store/
-│ ├── .gitignore
-│ ├── README.md
-│ ├── eslint.config.js
-│ ├── index.html
 │ ├── package.json
 │ ├── pnpm-lock.yaml
-│ ├── postcss.config.mjs
 │ ├── tailwind.config.js
-│ ├── tsconfig.app.json
 │ ├── tsconfig.json
-│ ├── tsconfig.node.json
 │ └── vite.config.ts
 ```
 
