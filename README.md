@@ -92,7 +92,7 @@ https://github.com/user-attachments/assets/a60dc2ce-201a-4f95-a4e3-71449f42f75c
 ### Validación de métodos de pago
 - Campos vacíos
 
-https://github.com/user-attachments/assets/9af4d7a0-8b3c-48d9-8663-a38267b5a469
+https://github.com/user-attachments/assets/3c35d37c-b865-4a11-9b9e-abc2753c7c10
 
 - Tarjeta rechazada
 
@@ -100,12 +100,19 @@ https://github.com/user-attachments/assets/f93c43c1-0756-4784-beba-5dbd2332fa0d
 
 - Error al procesar una tarjeta
 
-https://github.com/user-attachments/assets/e9156832-000b-4dd1-b90c-853f134dfe33
+https://github.com/user-attachments/assets/b0f2f003-96a6-4ab2-8693-85a0954e2d34
 
 ### Métodos de pago correctos
-- Autenticación y conexión con servicios externos
+- Captcha y conexión con servicios externos
 
-https://github.com/user-attachments/assets/b021e883-2a5c-4355-bd1a-bf572f0f164d
+https://github.com/user-attachments/assets/a0cbf724-11b3-41a9-9eb6-ef04f63844af
+
+- Tarjeta válida
+
+https://github.com/user-attachments/assets/6cf174fb-d5aa-4db0-95f1-52f6fb17e480
+
+
+
 
 
 
