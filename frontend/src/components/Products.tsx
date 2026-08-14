@@ -8,6 +8,7 @@ import { FaStar, FaHeart, FaRegHeart } from 'react-icons/fa'
 import { Badge } from '../UI/Badge'
 import { Button } from '../UI/Button'
 import { PuddleCartButton } from './PuddleCartButton'
+import { Chat } from './Chat'
 
 export const Products = () => {
   const context = useContext(ProductsContext)
@@ -174,6 +175,8 @@ export const Products = () => {
             )
           })}
         </div>
+        
+        <Chat />
       </div>
     </>
   )

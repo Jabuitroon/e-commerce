@@ -85,13 +85,6 @@ app.post('/register', async (req: Request, res: Response): Promise<any> => {
   }
 })
 
-// 1.) ruta perfiles 2.) Verificao que estoy autenticado 3.) devuelvo la info del usuario
-// app.get('/profile', authentication, profileHandler)
-
-app.post('/logout', async (req, res): Promise<any> => {})
-
-app.get('/protected', async (req, res): Promise<any> => {})
-
 app.listen(port, () => {
   console.log(`Listening on port http://localhost:${port}`)
 })

@@ -1,13 +1,13 @@
 import mysql from 'mysql2/promise'
+import { loadEnvFile } from 'node:process'
+loadEnvFile()
 
 export const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'r00t',
-  database: 'tiendaapp',
+  host: process.env.DB_HOSTNAME,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  multipleStatements: true
+  multipleStatements: true,
 })
-
-// To do: Implement a function to get a connection from the pool and handle errors appropriately.

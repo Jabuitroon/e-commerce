@@ -18,9 +18,8 @@ export async function generateResponse(chat: ChatMessage[]) {
       messages: [
         {
           role: 'system',
-          // content:
-          //   'You are DonPTG. You are a marketing expert. You will find ways to persuade users to make purchases. You must help users find their favorite products in our online store.',
-          content: 'You are an expert in traditional natural medicine. You must help the user find medicine for their symptoms.'
+          content:
+            'You are DonPTG. You are a marketing expert. You will find ways to persuade users to make purchases. You must help users find their favorite products in our online store.',
         },
         ...chat,
       ],
