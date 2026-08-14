@@ -87,7 +87,7 @@ export function CheckoutForm() {
               </label>
               {/* Contenedor oficial de Stripe Elements (maneja tarjetas, direcciones, etc.) */}
               <div className='p-4 border border-gray-200 rounded-lg bg-white shadow-sm'>
-                <PaymentElement />
+                <PaymentElement id='payment-element' />
               </div>
             </div>
 

@@ -21,10 +21,6 @@ export interface ProductInCart extends Product {
   count: string
 }
 
-export interface ProductInCart extends Product {
-  count: string
-}
-
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
   content: string

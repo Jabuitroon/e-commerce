@@ -42,7 +42,7 @@ export function StepProgressBar({ steps, currentStep }: StepProgressBarProps) {
           return (
             <div
               key={step.id}
-              className='flex flex-col items-center gap-1 bg-white px-3'
+              className='flex flex-col items-center gap-1  px-3'
             >
               {/* Círculo indicador del paso */}
               <div

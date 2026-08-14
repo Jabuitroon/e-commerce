@@ -1,19 +1,8 @@
-import { useAuthStore } from '../../store/auth.store'
-import ProductManagement from './ProductManager/ProductManager'
-
 export const Profile = () => {
-  const logout = useAuthStore((state) => state.logout)
-
   return (
     <>
-      <h1>Perfil administrador</h1>
-      <main className='container mx-auto py-8 px-4 max-w-7xl'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-8'>
-          Gestión de Productos
-        </h1>
-        <ProductManagement />
-      </main>
-      <button onClick={logout}>logout</button>
+      <h1>Perfil de usuario</h1>
+      <main className='container mx-auto py-8 px-4 max-w-7xl'></main>
     </>
   )
 }

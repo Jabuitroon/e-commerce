@@ -33,7 +33,10 @@ export default function ProductManagement() {
   } = useProductTooltip()
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 p-4'>
+      <h1 className='text-3xl font-bold text-gray-900 mb-8'>
+        Gestión de Productos
+      </h1>
       <ProductHeader
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}

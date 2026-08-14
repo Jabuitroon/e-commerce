@@ -10,6 +10,7 @@ import { Register } from '../components/Register'
 import { LoginPage } from '../pages/LoginPage'
 import { Profile } from './Profile'
 import ProductPage from '../pages/ProductPage'
+import { ProductsManagerPage } from '../pages/ProductsManagerPage'
 
 const OrdersPage = lazy(() => import('../pages/OrderPage'))
 const OrderDetailPage = lazy(() => import('../pages/OrderDetailPage'))
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
   {
     element: <ProtectedRoute allowedRoles={['administrador']} />,
     children: [
-      { path: '/profile', element: <Profile /> },
+      // { path: '/profile', element: <Profile /> },
       {
         path: '/admin',
         element: <AdminLayout />,
@@ -47,6 +48,8 @@ const router = createBrowserRouter([
             path: 'orders/:id',
             element: withSuspense(<OrderDetailPage />),
           },
+          { index: true, element: <Navigate to='/admin/products' replace /> },
+          { path: 'products', element: withSuspense(<ProductsManagerPage />) },
         ],
       },
     ],
@@ -58,6 +61,7 @@ const router = createBrowserRouter([
         path: '/',
         element: <RootLayout />,
         children: [
+          { path: '/profile', element: <Profile /> },
           { path: '/cart', element: <CartPage /> },
           { path: '/checkout', element: <CheckoutPage /> },
           { path: '/order-confirmation', element: <OrderConfirmationPage /> },

@@ -29,10 +29,10 @@ app.set('trust proxy', 1)
 
 app.use(cors())
 app.use('/api', authRoutes)
-app.use(productsRoutes)
-app.use('/api', orderRoutes)
-app.use('/api', checkoutRoutes)
 app.use('/api', userRoutes)
+app.use(productsRoutes)
+app.use('/api', checkoutRoutes)
+app.use('/api', orderRoutes)
 app.use(aiRouter)
 
 // Corre cada minuto: cancela órdenes pendientes vencidas y libera su stock.

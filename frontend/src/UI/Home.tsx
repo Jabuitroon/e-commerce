@@ -91,6 +91,7 @@ export default function HeaderHome() {
               </div>
               {/* Carrito */}
               <Button
+                data-cy='cart-toggle-button'
                 onClick={toggleCart}
                 aria-expanded={isCartOpen}
                 size='sm'
