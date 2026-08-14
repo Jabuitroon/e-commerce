@@ -1,9 +1,22 @@
 # 🛍️ E-commerce App
 
-Este es un monorepo para una aplicación de comercio electrónico de Arquitectura cliente-servidor, construida con TypeScript, React y Tailwind en el front, en el back con node JS y una base de datos mySQL. La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la ejecución de ambos puertos como servidores desacoplados, lo que optimizó el flujo de trabajo y la eficiencia del proyecto.
+Este es un monorepo para una aplicación de comercio electrónico de Arquitectura cliente-servidor, construida con TypeScript, React y Tailwind en el frontend, Node JS/Express para el backend y una base de datos relacional mySQL. La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la ejecución de ambos puertos como servidores desacoplados, lo que optimizó el flujo de trabajo y la eficiencia del proyecto.
 
-* Se implementó la autenticación JWT y utilicé Zustand para la gestión de estado del carrito de compras etc.
+## Patrones y prácticas en el Backend
+
+- Data Access Object
+- Role-Based Access Control
+- Single Responsibility
+- Interface Segregation
+
+## Características importantes
+
+* Se implementó la autenticación JWT y utilicé Zustand para la gestión de la sesión activa y perfil de usuario.
+* React context para la gestión de estado del carrito de compras.
+* Se implementó un webhook para gestionar la creación de checkouts con stripe.
+* Se implementó un modelo de openIA para el chatbot.
 * Este proyecto me permitió unificar mis conocimientos sobre bases de datos y creación de APIs.
+* Para el Role-Based Access Control, se utilizaron middlewares en backend y React Router en frontend.
 
 ## 🧱 Estructura del proyecto
 ```plaintext
