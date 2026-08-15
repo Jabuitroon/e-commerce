@@ -1,10 +1,11 @@
 # 🛍️ E-commerce App
 
-Este es un monorepo para una aplicación de comercio electrónico de Arquitectura cliente-servidor, construida con TypeScript, React y Tailwind en el frontend, Node JS/Express para el backend y una base de datos relacional mySQL. La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la ejecución de ambos puertos como servidores desacoplados, lo que optimizó el flujo de trabajo y la eficiencia del proyecto.
+Este es un monorepo para una aplicación de comercio electrónico, construida con TypeScript, React y Tailwind en el frontend, Node JS/Express para el backend y una base de datos relacional mySQL. La estructura del repositorio se dividió en dos partes para facilitar el desarrollo e implementación de scripts, permitiendo la ejecución de ambos puertos como servidores desacoplados, lo que optimizó el flujo de trabajo y la eficiencia del proyecto.
 
 ## Patrones y prácticas en el Backend
 
-- Data Access Object
+- Patrón de arquitectura en capas
+- Patrón de diseño Data Access Object
 - Role-Based Access Control
 - Single Responsibility
 - Interface Segregation
